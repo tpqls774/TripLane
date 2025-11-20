@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import {
   getCourse,
   createCourse,
@@ -9,10 +9,10 @@ import {
 } from "../services/courseService";
 import { ThemeType } from "../types";
 import type { CoursePlace, ThemeTypeValue } from "../types";
-import CourseEditSkeleton from "../components/CourseEditSkeleton";
-import Button from "../components/Button";
-import Input from "../components/Input";
-import Toast from "../components/Toast";
+import CourseEditSkeleton from "../components/skeleton/CourseEditSkeleton";
+import Button from "../components/common/Button";
+import Input from "../components/common/Input";
+import Toast from "../components/common/Toast";
 
 const CourseEdit: React.FC = () => {
   const { t } = useTranslation();

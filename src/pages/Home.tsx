@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { ThemeType } from "../types";
 import type { ThemeTypeValue } from "../types";
-import Button from "../components/Button";
+import Button from "../components/common/Button";
 
 const Home: React.FC = () => {
   const { t } = useTranslation();

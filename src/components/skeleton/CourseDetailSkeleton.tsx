@@ -50,10 +50,10 @@ const CourseDetailSkeleton: React.FC = () => {
                 className="border border-gray-200 rounded-2xl overflow-hidden"
               >
                 <div className="flex flex-col sm:flex-row">
-                  <div className="sm:w-64 aspect-video sm:aspect-square bg-gray-200 animate-pulse flex-shrink-0"></div>
+                  <div className="sm:w-64 aspect-video sm:aspect-square bg-gray-200 animate-pulse shrink-0"></div>
                   <div className="flex-1 p-6">
                     <div className="flex items-start gap-4">
-                      <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse flex-shrink-0"></div>
+                      <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse shrink-0"></div>
                       <div className="flex-1 space-y-3">
                         <div className="h-6 w-64 bg-gray-200 rounded animate-pulse"></div>
                         <div className="h-4 w-full max-w-md bg-gray-200 rounded animate-pulse"></div>

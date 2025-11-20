@@ -5,11 +5,11 @@ import { ChevronLeft, ChevronRight, Compass } from "lucide-react";
 import { getAreaBasedList } from "../services/tourismApi";
 import { ContentType, ThemeType } from "../types";
 import type { TourismPlace, CoursePlace, ThemeTypeValue } from "../types";
-import ErrorMessage from "../components/ErrorMessage";
-import MultiPlaceMap from "../components/MultiPlaceMap";
-import Button from "../components/Button";
-import PlaceSkeleton from "../components/PlaceSkeleton";
-import Toast from "../components/Toast";
+import ErrorMessage from "../components/common/ErrorMessage";
+import MultiPlaceMap from "../components/map/MultiPlaceMap";
+import Button from "../components/common/Button";
+import PlaceSkeleton from "../components/skeleton/PlaceSkeleton";
+import Toast from "../components/common/Toast";
 
 const Recommend: React.FC = () => {
   const { t } = useTranslation();
