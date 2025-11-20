@@ -1,0 +1,118 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "search": "Search",
+    "back": "Back"
+  },
+  "nav": {
+    "home": "Home",
+    "places": "Places",
+    "recommend": "Recommendations",
+    "myCourses": "My Courses",
+    "favorites": "Favorites",
+    "language": "Language"
+  },
+  "theme": {
+    "title": "Choose Your Theme",
+    "wellness": "Wellness & Healing",
+    "petFriendly": "Pet-Friendly Travel",
+    "hallyu": "K-Culture Experience",
+    "gourmet": "Gourmet Journey",
+    "culture": "Cultural Exploration",
+    "nature": "Nature Retreat",
+    "description": {
+      "wellness": "Find peace and relaxation",
+      "petFriendly": "Travel with your furry friends",
+      "hallyu": "Experience Korean culture and tradition",
+      "gourmet": "Discover delicious culinary delights",
+      "culture": "Explore art and culture",
+      "nature": "Relax in natural surroundings"
+    }
+  },
+  "home": {
+    "title": "TripLane",
+    "subtitle": "Create your personalized travel itinerary",
+    "startButton": "Start Your Journey"
+  },
+  "recommend": {
+    "title": "Recommended Itinerary",
+    "selectedTheme": "Selected Theme",
+    "places": "Recommended Places",
+    "addToCourse": "Add to Course",
+    "removeFromCourse": "Remove from Course",
+    "saveCourse": "Save Course",
+    "viewMap": "View Map",
+    "viewList": "View List",
+    "noPlaces": "No places found",
+    "selectedPlaces": "Selected Places"
+  },
+  "course": {
+    "create": "Create New Course",
+    "title": "Course Title",
+    "description": "Course Description",
+    "theme": "Theme",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "travelers": "Number of Travelers",
+    "places": "Places",
+    "noCourses": "No saved courses",
+    "createNew": "Create a new course",
+    "saveSuccess": "Course saved successfully",
+    "saveError": "Failed to save course",
+    "deleteSuccess": "Course deleted successfully",
+    "deleteError": "Failed to delete course",
+    "updateSuccess": "Course updated successfully",
+    "updateError": "Failed to update course",
+    "deleteConfirm": "Are you sure you want to delete this?",
+    "share": "Share",
+    "copyLink": "Copy Link"
+  },
+  "place": {
+    "details": "Details",
+    "address": "Address",
+    "phone": "Phone",
+    "openingHours": "Opening Hours",
+    "price": "Price",
+    "website": "Website",
+    "images": "Images",
+    "overview": "Overview",
+    "touristSpot": "Tourist Spot",
+    "restaurant": "Restaurant",
+    "accommodation": "Accommodation",
+    "festival": "Festival/Event",
+    "culture": "Cultural Facility",
+    "leports": "Leisure Sports",
+    "shopping": "Shopping"
+  },
+  "error": {
+    "networkError": "Network error occurred",
+    "apiError": "Failed to load data",
+    "notFound": "Page not found",
+    "retry": "Retry"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "signup": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "displayName": "Name",
+    "displayNamePlaceholder": "John Doe",
+    "loginDesc": "Login to your account",
+    "signupDesc": "Create a new account",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "passwordMismatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "loginRequired": "Login required"
+  }
+}
