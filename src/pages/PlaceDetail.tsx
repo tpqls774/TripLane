@@ -11,11 +11,11 @@ import {
   removeFavorite,
   getFavoriteByPlace,
 } from "../services/favoriteService";
-import { useAuth } from "../contexts/AuthContext";
-import PlaceDetailSkeleton from "../components/PlaceDetailSkeleton";
-import ErrorMessage from "../components/ErrorMessage";
-import KakaoMap from "../components/KakaoMap";
-import Toast from "../components/Toast";
+import { useAuth } from "../hooks/useAuth";
+import PlaceDetailSkeleton from "../components/skeleton/PlaceDetailSkeleton";
+import ErrorMessage from "../components/common/ErrorMessage";
+import KakaoMap from "../components/map/KakaoMap";
+import Toast from "../components/common/Toast";
 
 import { Calendar, Car, Clock, Earth, Phone, Pin, Dog } from "lucide-react";
 

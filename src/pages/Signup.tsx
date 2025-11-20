@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Map } from "lucide-react";
 import { signUp } from "../services/authService";
-import Button from "../components/Button";
+import Button from "../components/common/Button";
 
 const Signup: React.FC = () => {
   const { t } = useTranslation();

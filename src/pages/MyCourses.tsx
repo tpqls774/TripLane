@@ -11,13 +11,13 @@ import {
   Calendar,
   Eye,
 } from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import { getUserCourses, deleteCourse } from "../services/courseService";
 import type { SavedCourse } from "../types";
-import ErrorMessage from "../components/ErrorMessage";
-import Button from "../components/Button";
-import CourseSkeleton from "../components/CourseSkeleton";
-import Toast from "../components/Toast";
+import ErrorMessage from "../components/common/ErrorMessage";
+import Button from "../components/common/Button";
+import CourseSkeleton from "../components/skeleton/CourseSkeleton";
+import Toast from "../components/common/Toast";
 
 const MyCourses: React.FC = () => {
   const { t } = useTranslation();
@@ -190,7 +190,7 @@ const MyCourses: React.FC = () => {
                       {course.travelers && (
                         <span className="flex items-center gap-1">
                           <Users className="w-4 h-4" strokeWidth={2} />
-                          {course.travelers}{t("course.travelers")}
+                          {course.travelers} {t("course.travelers")}
                         </span>
                       )}
                     </div>

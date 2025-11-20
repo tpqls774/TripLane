@@ -12,11 +12,11 @@ import {
 } from "lucide-react";
 import { getCourse } from "../services/courseService";
 import type { SavedCourse } from "../types";
-import CourseDetailSkeleton from "../components/CourseDetailSkeleton";
-import ErrorMessage from "../components/ErrorMessage";
-import MultiPlaceMap from "../components/MultiPlaceMap";
-import Toast from "../components/Toast";
-import Button from "../components/Button";
+import CourseDetailSkeleton from "../components/skeleton/CourseDetailSkeleton";
+import ErrorMessage from "../components/common/ErrorMessage";
+import MultiPlaceMap from "../components/map/MultiPlaceMap";
+import Toast from "../components/common/Toast";
+import Button from "../components/common/Button";
 
 const CourseDetail: React.FC = () => {
   const { t } = useTranslation();

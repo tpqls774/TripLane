@@ -11,10 +11,10 @@ import {
 import { getAreaBasedList } from "../services/tourismApi";
 import { ContentType } from "../types";
 import type { TourismPlace, CoursePlace } from "../types";
-import ErrorMessage from "../components/ErrorMessage";
-import Button from "../components/Button";
-import PlaceSkeleton from "../components/PlaceSkeleton";
-import Toast from "../components/Toast";
+import ErrorMessage from "../components/common/ErrorMessage";
+import Button from "../components/common/Button";
+import PlaceSkeleton from "../components/skeleton/PlaceSkeleton";
+import Toast from "../components/common/Toast";
 
 const Places: React.FC = () => {
   const { t } = useTranslation();

@@ -2,8 +2,8 @@ import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Home, Sparkles, BookOpen, Heart, Map, Globe } from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
-import { logout } from "../services/authService";
+import { useAuth } from "../../hooks/useAuth";
+import { logout } from "../../services/authService";
 
 const Navbar: React.FC = () => {
   const { t, i18n } = useTranslation();

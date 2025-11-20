@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import { getUserFavorites, removeFavorite } from "../services/favoriteService";
 import type { Favorite } from "../types/favorite";
-import ErrorMessage from "../components/ErrorMessage";
-import PlaceSkeleton from "../components/PlaceSkeleton";
-import Toast from "../components/Toast";
+import ErrorMessage from "../components/common/ErrorMessage";
+import PlaceSkeleton from "../components/skeleton/PlaceSkeleton";
+import Toast from "../components/common/Toast";
 
 import { Heart } from "lucide-react";
 
