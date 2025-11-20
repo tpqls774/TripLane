@@ -15,6 +15,7 @@ import { useAuth } from "../contexts/AuthContext";
 import PlaceDetailSkeleton from "../components/PlaceDetailSkeleton";
 import ErrorMessage from "../components/ErrorMessage";
 import KakaoMap from "../components/KakaoMap";
+import Toast from "../components/Toast";
 
 import { Calendar, Car, Clock, Earth, Phone, Pin, Dog } from "lucide-react";
 
@@ -55,6 +56,10 @@ const PlaceDetail: React.FC = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteId, setFavoriteId] = useState<string | null>(null);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error" | "info";
+  } | null>(null);
 
   useEffect(() => {
     if (placeId) {
@@ -156,8 +161,8 @@ const PlaceDetail: React.FC = () => {
 
   const handleToggleFavorite = async () => {
     if (!currentUser) {
-      alert(t("auth.loginRequired"));
-      navigate("/login");
+      setToast({ message: t("auth.loginRequired"), type: "error" });
+      setTimeout(() => navigate("/login"), 1500);
       return;
     }
 
@@ -171,6 +176,7 @@ const PlaceDetail: React.FC = () => {
         await removeFavorite(favoriteId);
         setIsFavorite(false);
         setFavoriteId(null);
+        setToast({ message: t("place.removeFromFavorite"), type: "info" });
       } else {
         // 즐겨찾기 추가
         const newFavoriteId = await addFavorite({
@@ -183,14 +189,16 @@ const PlaceDetail: React.FC = () => {
         });
         setIsFavorite(true);
         setFavoriteId(newFavoriteId);
+        setToast({ message: t("place.addToFavorite"), type: "success" });
       }
     } catch (error) {
       console.error("즐겨찾기 토글 실패:", error);
-      alert(
-        isFavorite
-          ? "즐겨찾기 제거에 실패했습니다."
-          : "즐겨찾기 추가에 실패했습니다."
-      );
+      setToast({
+        message: isFavorite
+          ? t("place.removeFromFavoriteError")
+          : t("place.addToFavoriteError"),
+        type: "error",
+      });
     } finally {
       setFavoriteLoading(false);
     }
@@ -376,7 +384,7 @@ const PlaceDetail: React.FC = () => {
             <div className="sticky top-24">
               <div className="border border-gray-200 rounded-2xl p-6 space-y-6">
                 <h2 className="text-xl font-semibold text-gray-900 pb-4 border-b border-gray-200">
-                  상세 정보
+                  {t("place.details")}
                 </h2>
 
                 <div className="space-y-4">
@@ -430,7 +438,7 @@ const PlaceDetail: React.FC = () => {
                       {/* <span className="text-2xl">📅</span> */}
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-900 mb-1">
-                          휴무일
+                          {t("place.restDate")}
                         </p>
                         <div
                           className="text-sm text-gray-600"
@@ -445,7 +453,7 @@ const PlaceDetail: React.FC = () => {
                       <Car size={24} />
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-900 mb-1">
-                          주차 정보
+                          {t("place.parking")}
                         </p>
                         <div
                           className="text-sm text-gray-600"
@@ -455,12 +463,12 @@ const PlaceDetail: React.FC = () => {
                     </div>
                   )}
 
-                  {!intro?.chkpet && (
+                  {intro?.chkpet && (
                     <div className="flex items-start gap-3">
                       <Dog size={24} />
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-900 mb-1">
-                          반려동물 동반 가능
+                          {t("place.petFriendly")}
                         </p>
                         <div
                           className="text-sm text-gray-600"
@@ -492,6 +500,15 @@ const PlaceDetail: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Toast */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 };

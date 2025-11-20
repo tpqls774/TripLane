@@ -24,13 +24,13 @@ Trip Lane - UI 스타일 가이드
 
 주요 색상 (Primary Colors)
 ---------------------------
-- Primary: #3b82f6 (파란색)
+- Primary: #00d9b4 (청록색)
   사용처: 주요 버튼, 링크, 선택된 상태, 브랜드 색상
 
-- Primary Dark: #2563eb (진한 파란색)
+- Primary Dark: #00b899 (진한 청록색)
   사용처: Primary 버튼의 hover 상태
 
-- Primary Light: #dbeafe (연한 파란색)
+- Primary Light: #e0f9f5 (연한 청록색)
   사용처: 배경 강조, 선택된 항목 배경
 
 보조 색상 (Secondary Colors)
@@ -104,9 +104,9 @@ system-ui, -apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif
 
 Primary 버튼
 ------------
-배경: #3b82f6 (Primary)
+배경: #00d9b4 (Primary)
 텍스트: 흰색
-Hover: #2563eb (Primary Dark)
+Hover: #00b899 (Primary Dark)
 용도: 주요 액션 (저장, 확인, 시작 등)
 
 Secondary 버튼
@@ -126,20 +126,20 @@ Hover: #dc2626 (Error Dark)
 Outline 버튼
 ------------
 배경: 투명
-테두리: 2px solid #3b82f6
-텍스트: #3b82f6
-Hover: 배경 #3b82f6, 텍스트 흰색
+테두리: 2px solid #00d9b4
+텍스트: #00d9b4
+Hover: 배경 #00d9b4, 텍스트 흰색
 용도: 덜 중요한 액션, 토글 버튼
 
 버튼 크기
 ---------
-- Small: px-3 py-1.5 text-sm
-- Medium: px-4 py-2 text-base
-- Large: px-6 py-3 text-lg
+- Small: px-4 py-2 text-sm
+- Medium: px-6 py-3 text-base
+- Large: px-8 py-4 text-lg
 
 공통 속성
 ---------
-- border-radius: 0.5rem (rounded-lg)
+- border-radius: 0.75rem (rounded-xl)
 - transition: all 0.2s
 - focus: ring-2 ring-primary ring-offset-2
 - disabled: opacity-50, cursor-not-allowed

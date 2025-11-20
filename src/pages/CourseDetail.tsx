@@ -49,7 +49,7 @@ const CourseDetail: React.FC = () => {
       if (courseData) {
         setCourse(courseData);
       } else {
-        setError("코스를 찾을 수 없습니다.");
+        setError(t("course.notFound"));
       }
     } catch (err) {
       console.error("Failed to fetch course:", err);
@@ -62,7 +62,7 @@ const CourseDetail: React.FC = () => {
   const handleShare = () => {
     const shareUrl = `${window.location.origin}/course/${courseId}/view`;
     navigator.clipboard.writeText(shareUrl);
-    setToast({ message: "링크가 복사되었습니다", type: "success" });
+    setToast({ message: t("course.linkCopied"), type: "success" });
   };
 
   const calculateTotalDistance = (): number => {
@@ -97,7 +97,7 @@ const CourseDetail: React.FC = () => {
   if (error || !course) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <ErrorMessage message={error || "코스를 찾을 수 없습니다."} />
+        <ErrorMessage message={error || t("course.notFound")} />
       </div>
     );
   }
@@ -122,7 +122,7 @@ const CourseDetail: React.FC = () => {
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors mb-6"
           >
             <ArrowLeft className="w-5 h-5" strokeWidth={2} />
-            <span className="font-medium">내 코스로 돌아가기</span>
+            <span className="font-medium">{t("course.backToMyCourses")}</span>
           </button>
 
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
@@ -141,13 +141,13 @@ const CourseDetail: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <MapPin className="w-5 h-5" strokeWidth={2} />
                   <span className="font-medium">
-                    {course.places.length}개 장소
+                    {course.places.length}{t("common.placeCount")}
                   </span>
                 </div>
                 {course.travelers && (
                   <div className="flex items-center gap-2">
                     <Users className="w-5 h-5" strokeWidth={2} />
-                    <span className="font-medium">{course.travelers}명</span>
+                    <span className="font-medium">{course.travelers} {t("course.travelers")}</span>
                   </div>
                 )}
                 {course.startDate && (
@@ -160,7 +160,7 @@ const CourseDetail: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <Navigation className="w-5 h-5" strokeWidth={2} />
                     <span className="font-medium">
-                      총 거리: 약 {totalDistance}km
+                      {t("course.totalDistance")}: {t("course.about")} {totalDistance}km
                     </span>
                   </div>
                 )}
@@ -190,7 +190,7 @@ const CourseDetail: React.FC = () => {
         {/* Map Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-semibold text-gray-900">코스 지도</h2>
+            <h2 className="text-2xl font-semibold text-gray-900">{t("course.courseMap")}</h2>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -199,7 +199,7 @@ const CourseDetail: React.FC = () => {
                 className="w-4 h-4 rounded"
               />
               <span className="text-sm font-medium text-gray-700">
-                경로 표시
+                {t("course.showRoute")}
               </span>
             </label>
           </div>
@@ -220,7 +220,7 @@ const CourseDetail: React.FC = () => {
         {/* Places List */}
         <div>
           <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-            방문 장소 ({course.places.length})
+            {t("course.visitPlaces")} ({course.places.length})
           </h2>
           <div className="space-y-4">
             {course.places.map((place, index) => (
@@ -263,7 +263,7 @@ const CourseDetail: React.FC = () => {
                         </p>
                         {index < course.places.length - 1 && totalDistance > 0 && (
                           <p className="text-sm text-gray-500">
-                            다음 장소까지:{" "}
+                            {t("course.toNextPlace")}:{" "}
                             {(() => {
                               const nextPlace = course.places[index + 1];
                               const R = 6371;
@@ -280,7 +280,7 @@ const CourseDetail: React.FC = () => {
                               const c =
                                 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
                               const distance = R * c;
-                              return `약 ${(Math.round(distance * 10) / 10).toFixed(1)}km`;
+                              return `${t("course.about")} ${(Math.round(distance * 10) / 10).toFixed(1)}km`;
                             })()}
                           </p>
                         )}

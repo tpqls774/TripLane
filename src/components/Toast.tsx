@@ -1,11 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import {
-  CheckCircle2,
-  XCircle,
-  Info,
-  AlertTriangle,
-  X,
-} from "lucide-react";
+import { X } from "lucide-react";
 
 type ToastType = "success" | "error" | "info" | "confirm";
 
@@ -22,33 +16,31 @@ interface ToastProps {
 
 const iconMap: Record<
   ToastType,
-  { icon: React.ReactNode; accent: string; badge: string; badgeText: string }
+  { icon: string; accent: string; badge: string; badgeText: string }
 > = {
   success: {
-    icon: <CheckCircle2 className="w-5 h-5 text-emerald-600" strokeWidth={2} />,
-    accent: "shadow-[0_0_0_4px_rgba(16,185,129,0.12)]",
+    icon: "✓",
+    accent: "shadow-[0_4px_10px_rgba(0,0,0,0.06)]",
     badge: "bg-emerald-100",
-    badgeText: "text-emerald-700",
+    badgeText: "text-emerald-600",
   },
   error: {
-    icon: <XCircle className="w-5 h-5 text-rose-600" strokeWidth={2} />,
-    accent: "shadow-[0_0_0_4px_rgba(244,63,94,0.12)]",
+    icon: "✕",
+    accent: "shadow-[0_4px_10px_rgba(0,0,0,0.06)]",
     badge: "bg-rose-100",
-    badgeText: "text-rose-700",
+    badgeText: "text-rose-600",
   },
   info: {
-    icon: <Info className="w-5 h-5 text-sky-600" strokeWidth={2} />,
-    accent: "shadow-[0_0_0_4px_rgba(37,99,235,0.12)]",
+    icon: "i",
+    accent: "shadow-[0_4px_10px_rgba(0,0,0,0.06)]",
     badge: "bg-sky-100",
-    badgeText: "text-sky-700",
+    badgeText: "text-sky-600",
   },
   confirm: {
-    icon: (
-      <AlertTriangle className="w-5 h-5 text-amber-600" strokeWidth={2} />
-    ),
-    accent: "shadow-[0_0_0_4px_rgba(245,158,11,0.15)]",
+    icon: "?",
+    accent: "shadow-[0_4px_10px_rgba(0,0,0,0.06)]",
     badge: "bg-amber-100",
-    badgeText: "text-amber-700",
+    badgeText: "text-amber-600",
   },
 };
 
@@ -90,33 +82,35 @@ const Toast: React.FC<ToastProps> = ({
   const styles = useMemo(() => iconMap[type], [type]);
 
   return (
-    <div className="fixed top-6 right-6 z-50 flex flex-col gap-3 pointer-events-none">
+    <div className="fixed top-6 right-6 z-50 flex flex-col gap-2 pointer-events-none">
       <div
         role="status"
         aria-live="polite"
-        className={`pointer-events-auto relative min-w-[320px] max-w-md rounded-2xl border border-gray-200 bg-white p-3.5 text-gray-900 shadow-[0_12px_30px_rgba(15,23,42,0.08)] ${styles.accent} animate-toast-slide-in`}
+        className={`pointer-events-auto relative min-w-[320px] max-w-[420px] rounded-[10px] border border-gray-200 bg-white p-4 text-gray-900 ${styles.accent} animate-toast-slide-in`}
       >
-        <div className="flex gap-3 items-center">
+        <div className="flex gap-3 items-start">
           <div
-            className={`flex h-10 w-10 items-center justify-center rounded-full ${styles.badge} ${styles.badgeText}`}
+            className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${styles.badge}`}
           >
-            {styles.icon}
+            <span className={`text-sm font-bold ${styles.badgeText}`}>
+              {styles.icon}
+            </span>
           </div>
-          <div className="flex-1 text-sm leading-relaxed">
-            <p>{message}</p>
+          <div className="flex-1">
+            <p className="text-sm leading-relaxed wrap-break-word">{message}</p>
             {isConfirm && (
-              <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-end">
-                <button
-                  onClick={handleCancel}
-                  className="w-full rounded-lg bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-300 sm:w-auto"
-                >
-                  {cancelText}
-                </button>
+              <div className="mt-3 flex gap-2">
                 <button
                   onClick={handleConfirm}
-                  className="w-full rounded-lg bg-rose-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-rose-700 sm:w-auto"
+                  className="px-3 py-1.5 rounded bg-red-600 text-white text-sm cursor-pointer transition-colors hover:bg-red-700"
                 >
                   {confirmText}
+                </button>
+                <button
+                  onClick={handleCancel}
+                  className="px-3 py-1.5 rounded bg-gray-600 text-white text-sm cursor-pointer transition-colors hover:bg-gray-700"
+                >
+                  {cancelText}
                 </button>
               </div>
             )}
@@ -124,7 +118,7 @@ const Toast: React.FC<ToastProps> = ({
           {!isConfirm && (
             <button
               onClick={onClose}
-              className="rounded-full p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+              className="shrink-0 bg-transparent border-none text-gray-400 cursor-pointer opacity-60 transition-opacity hover:opacity-100"
               aria-label="닫기"
             >
               <X className="w-4 h-4" strokeWidth={2} />

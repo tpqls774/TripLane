@@ -10,7 +10,23 @@
     "close": "닫기",
     "confirm": "확인",
     "search": "검색",
-    "back": "뒤로가기"
+    "back": "뒤로가기",
+    "viewDetails": "상세보기",
+    "placeCount": "개 장소",
+    "selected": "선택됨",
+    "basicInfo": "기본 정보",
+    "addPlace": "장소 추가하기",
+    "noPlacesAdded": "추가된 장소가 없습니다",
+    "totalPlaces": "총",
+    "update": "업데이트",
+    "createCourse": "코스 생성",
+    "selectedPlaces": "선택된 장소",
+    "createCourseDesc": "선택한 장소로 나만의 코스를 만들어보세요",
+    "remove": "제거",
+    "addedToCourse": "코스에 추가되었습니다",
+    "removedFromCourse": "코스에서 제거되었습니다",
+    "all": "전체",
+    "category": "카테고리"
   },
   "nav": {
     "home": "홈",
@@ -18,7 +34,10 @@
     "recommend": "추천 코스",
     "myCourses": "내 코스",
     "favorites": "즐겨찾기",
-    "language": "언어"
+    "language": "언어",
+    "myFavorites": "내 즐겨찾기",
+    "noFavorites": "즐겨찾기한 장소가 없습니다",
+    "addFavoritesDesc": "관심있는 장소를 즐겨찾기에 추가해보세요"
   },
   "theme": {
     "title": "테마를 선택하세요",
@@ -40,7 +59,21 @@
   "home": {
     "title": "TripLane",
     "subtitle": "당신만의 특별한 여행 코스를 만들어보세요",
-    "startButton": "여행 시작하기"
+    "startButton": "여행 시작하기",
+    "createOwnCourse": "나만의 여행 코스 만들기",
+    "selectTheme": "테마 선택하고 시작하기",
+    "browseAllPlaces": "모든 장소 둘러보기",
+    "themeSelectDesc": "원하는 테마를 선택하면 맞춤형 장소를 추천해드립니다",
+    "createCourseFeature": "원하는 테마를 선택하고, 추천 장소를 골라 나만의 완벽한 여행 코스를 만들어보세요",
+    "viewMyCourses": "보기",
+    "action": {
+      "wellness": "스파, 템플스테이 등 힐링 장소 찾기",
+      "petFriendly": "반려동물과 함께 갈 수 있는 장소 찾기",
+      "hallyu": "드라마·영화 촬영지와 K-POP 명소 찾기",
+      "gourmet": "맛집과 전통 음식 체험 장소 찾기",
+      "culture": "박물관, 미술관, 공연장 등 문화시설 찾기",
+      "nature": "국립공원, 트레킹 코스 등 자연 명소 찾기"
+    }
   },
   "recommend": {
     "title": "추천 코스",
@@ -52,7 +85,8 @@
     "viewMap": "지도 보기",
     "viewList": "목록 보기",
     "noPlaces": "추천 장소가 없습니다",
-    "selectedPlaces": "선택한 장소"
+    "selectedPlaces": "선택한 장소",
+    "mapClickInfo": "지도의 마커를 클릭하면 코스에 추가/제거할 수 있습니다"
   },
   "course": {
     "create": "새 코스 만들기",
@@ -73,7 +107,22 @@
     "updateError": "코스 수정에 실패했습니다",
     "deleteConfirm": "정말 삭제하시겠습니까?",
     "share": "공유하기",
-    "copyLink": "링크 복사"
+    "copyLink": "링크 복사",
+    "manageCourses": "나만의 여행 코스를 관리하세요",
+    "titlePlaceholder": "예: 서울 힐링 1박 2일 코스",
+    "descriptionPlaceholder": "코스에 대한 설명을 입력해주세요",
+    "enterTitle": "코스 제목을 입력해주세요",
+    "addMinPlace": "최소 1개 이상의 장소를 추가해주세요",
+    "enterInfo": "여행 코스의 정보를 입력해주세요",
+    "linkCopied": "링크가 복사되었습니다",
+    "notFound": "코스를 찾을 수 없습니다",
+    "backToMyCourses": "내 코스로 돌아가기",
+    "courseMap": "코스 지도",
+    "showRoute": "경로 표시",
+    "visitPlaces": "방문 장소",
+    "totalDistance": "총 거리",
+    "toNextPlace": "다음 장소까지",
+    "about": "약"
   },
   "place": {
     "details": "상세 정보",
@@ -90,7 +139,21 @@
     "festival": "축제/행사",
     "culture": "문화시설",
     "leports": "레포츠",
-    "shopping": "쇼핑"
+    "shopping": "쇼핑",
+    "searchPlaces": "전국의 다양한 관광지와 장소를 찾아보세요",
+    "searchPlaceholder": "장소명을 입력하세요",
+    "keywordRequired": "검색어를 입력해주세요",
+    "noResults": "검색 결과가 없습니다",
+    "noResultsDesc": "다른 검색어로 시도해보세요",
+    "addToFavorite": "즐겨찾기에 추가되었습니다",
+    "removeFromFavorite": "즐겨찾기에서 제거되었습니다",
+    "addToFavoriteError": "즐겨찾기 추가에 실패했습니다",
+    "removeFromFavoriteError": "즐겨찾기 제거에 실패했습니다",
+    "notFound": "장소를 찾을 수 없습니다",
+    "homepageVisit": "홈페이지 방문",
+    "restDate": "휴무일",
+    "parking": "주차 정보",
+    "petFriendly": "반려동물 동반 가능"
   },
   "error": {
     "networkError": "네트워크 오류가 발생했습니다",

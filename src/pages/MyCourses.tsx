@@ -27,10 +27,10 @@ const MyCourses: React.FC = () => {
   const [courses, setCourses] = useState<SavedCourse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [toast, setToast] = useState<{
     message: string;
-    type: "success" | "error" | "info";
+    type: "success" | "error" | "info" | "confirm";
+    onConfirm?: () => void | Promise<void>;
   } | null>(null);
 
   useEffect(() => {
@@ -61,17 +61,26 @@ const MyCourses: React.FC = () => {
       await deleteCourse(courseId);
       setCourses(courses.filter((c) => c.id !== courseId));
       setToast({ message: t("course.deleteSuccess"), type: "success" });
-      setDeleteConfirmId(null);
     } catch (err) {
       console.error("Failed to delete course:", err);
       setToast({ message: t("course.deleteError"), type: "error" });
     }
   };
 
+  const confirmDeleteCourse = (courseId: string) => {
+    setToast({
+      message: t("course.deleteConfirm"),
+      type: "confirm",
+      onConfirm: async () => {
+        await handleDeleteCourse(courseId);
+      },
+    });
+  };
+
   const handleShareCourse = (courseId: string) => {
     const shareUrl = `${window.location.origin}/course/${courseId}/view`;
     navigator.clipboard.writeText(shareUrl);
-    setToast({ message: "링크가 복사되었습니다", type: "success" });
+    setToast({ message: t("course.linkCopied"), type: "success" });
   };
 
   const formatDate = (timestamp: number) => {
@@ -99,7 +108,7 @@ const MyCourses: React.FC = () => {
                 </h1>
               </div>
               <p className="text-gray-600 text-lg">
-                나만의 여행 코스를 관리하세요
+                {t("course.manageCourses")}
               </p>
             </div>
             <Button
@@ -141,29 +150,6 @@ const MyCourses: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
             {courses.map((course) => (
               <div key={course.id} className="relative group">
-                {/* Delete Confirmation Overlay */}
-                {deleteConfirmId === course.id && (
-                  <div className="absolute inset-0 bg-white bg-opacity-95 rounded-2xl flex flex-col items-center justify-center z-10 p-6 border border-gray-200">
-                    <p className="text-lg font-semibold text-gray-900 mb-6">
-                      {t("course.deleteConfirm")}
-                    </p>
-                    <div className="flex gap-3">
-                      <button
-                        onClick={() => handleDeleteCourse(course.id)}
-                        className="px-6 py-2.5 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition-colors"
-                      >
-                        {t("common.delete")}
-                      </button>
-                      <button
-                        onClick={() => setDeleteConfirmId(null)}
-                        className="px-6 py-2.5 bg-gray-100 text-gray-900 rounded-xl font-medium hover:bg-gray-200 transition-colors"
-                      >
-                        {t("common.cancel")}
-                      </button>
-                    </div>
-                  </div>
-                )}
-
                 {/* Course Card */}
                 <div className="border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300">
                   {/* Places Preview Images */}
@@ -199,12 +185,12 @@ const MyCourses: React.FC = () => {
                     <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
                       <span className="flex items-center gap-1">
                         <MapPin className="w-4 h-4" strokeWidth={2} />
-                        {course.places.length}개 장소
+                        {course.places.length}{t("common.placeCount")}
                       </span>
                       {course.travelers && (
                         <span className="flex items-center gap-1">
                           <Users className="w-4 h-4" strokeWidth={2} />
-                          {course.travelers}명
+                          {course.travelers}{t("course.travelers")}
                         </span>
                       )}
                     </div>
@@ -218,7 +204,7 @@ const MyCourses: React.FC = () => {
 
                     {/* Metadata */}
                     <p className="text-xs text-gray-500 mb-4 pb-4 border-b border-gray-200">
-                      {formatDate(course.updatedAt)} 업데이트
+                      {formatDate(course.updatedAt)} {t("common.update")}
                     </p>
 
                     {/* Actions */}
@@ -230,7 +216,7 @@ const MyCourses: React.FC = () => {
                         variant="secondary"
                       >
                         <Eye className="w-4 h-4" strokeWidth={2} />
-                        상세보기
+                        {t("common.viewDetails")}
                       </Button>
                       <button
                         onClick={() => navigate(`/course/${course.id}/edit`)}
@@ -247,7 +233,7 @@ const MyCourses: React.FC = () => {
                         <Share2 className="w-5 h-5" strokeWidth={2} />
                       </button>
                       <button
-                        onClick={() => setDeleteConfirmId(course.id)}
+                        onClick={() => confirmDeleteCourse(course.id)}
                         className="px-4 py-2.5 bg-gray-100 text-red-600 rounded-xl font-medium hover:bg-red-50 transition-colors text-sm"
                         title={t("common.delete")}
                       >
@@ -268,6 +254,9 @@ const MyCourses: React.FC = () => {
           message={toast.message}
           type={toast.type}
           onClose={() => setToast(null)}
+          onConfirm={toast.onConfirm}
+          confirmText={t("common.delete")}
+          cancelText={t("common.cancel")}
         />
       )}
     </div>

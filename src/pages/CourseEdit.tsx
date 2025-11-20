@@ -12,7 +12,6 @@ import type { CoursePlace, ThemeTypeValue } from "../types";
 import CourseEditSkeleton from "../components/CourseEditSkeleton";
 import Button from "../components/Button";
 import Input from "../components/Input";
-import Card from "../components/Card";
 import Toast from "../components/Toast";
 
 const CourseEdit: React.FC = () => {
@@ -77,13 +76,13 @@ const CourseEdit: React.FC = () => {
 
   const handleSave = async () => {
     if (!title.trim()) {
-      setToast({ message: "코스 제목을 입력해주세요", type: "error" });
+      setToast({ message: t("course.enterTitle"), type: "error" });
       return;
     }
 
     if (places.length === 0) {
       setToast({
-        message: "최소 1개 이상의 장소를 추가해주세요",
+        message: t("course.addMinPlace"),
         type: "error",
       });
       return;
@@ -155,11 +154,11 @@ const CourseEdit: React.FC = () => {
   };
 
   if (loading) {
-    return <LoadingSpinner fullScreen />;
+    return <CourseEditSkeleton />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {toast && (
         <Toast
           message={toast.message}
@@ -168,52 +167,52 @@ const CourseEdit: React.FC = () => {
         />
       )}
 
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-6 sm:px-12 py-8 max-w-5xl">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-text-primary mb-2">
+        <div className="mb-12">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-3">
             {courseId === "new" ? t("course.create") : t("common.edit")}
           </h1>
-          <p className="text-text-secondary">여행 코스의 정보를 입력해주세요</p>
+          <p className="text-gray-600 text-lg">{t("course.enterInfo")}</p>
         </div>
 
         {/* Form */}
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* Basic Info Card */}
-          <Card>
-            <h2 className="text-xl font-bold text-text-primary mb-4">
-              기본 정보
+          <div className="border border-gray-200 rounded-2xl p-6 sm:p-8 bg-white">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">
+              {t("common.basicInfo")}
             </h2>
-            <div className="space-y-4">
+            <div className="space-y-5">
               <Input
                 label={t("course.title")}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="예: 서울 힐링 1박 2일 코스"
+                placeholder={t("course.titlePlaceholder")}
                 fullWidth
               />
 
               <div>
-                <label className="block text-sm font-medium text-text-primary mb-1">
+                <label className="block text-sm font-medium text-gray-900 mb-2">
                   {t("course.description")}
                 </label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="코스에 대한 설명을 입력해주세요"
+                  placeholder={t("course.descriptionPlaceholder")}
                   rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 text-gray-900"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-text-primary mb-1">
+                <label className="block text-sm font-medium text-gray-900 mb-2">
                   {t("course.theme")}
                 </label>
                 <select
                   value={theme}
                   onChange={(e) => setTheme(e.target.value as ThemeTypeValue)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 text-gray-900"
                 >
                   {Object.values(ThemeType).map((t) => (
                     <option key={t} value={t}>
@@ -248,12 +247,12 @@ const CourseEdit: React.FC = () => {
                 />
               </div>
             </div>
-          </Card>
+          </div>
 
           {/* Places Card */}
-          <Card>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-text-primary">
+          <div className="border border-gray-200 rounded-2xl p-6 sm:p-8 bg-white">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">
                 {t("course.places")} ({places.length})
               </h2>
               <Button
@@ -261,44 +260,44 @@ const CourseEdit: React.FC = () => {
                 size="sm"
                 onClick={() => navigate("/recommend?theme=" + theme)}
               >
-                + 장소 추가하기
+                + {t("common.addPlace")}
               </Button>
             </div>
 
             {places.length === 0 ? (
-              <div className="text-center py-8 text-text-secondary">
-                추가된 장소가 없습니다
+              <div className="text-center py-12 text-gray-600">
+                {t("common.noPlacesAdded")}
               </div>
             ) : (
               <div className="space-y-3">
                 {places.map((place, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200"
+                    className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-gray-300 transition-colors"
                   >
                     {/* Order */}
                     <div className="flex flex-col gap-1">
                       <button
                         onClick={() => handleMovePlace(index, "up")}
                         disabled={index === 0}
-                        className="text-xs text-gray-500 hover:text-primary disabled:opacity-30"
+                        className="text-xs text-gray-500 hover:text-gray-900 disabled:opacity-30 transition-colors"
                       >
                         ▲
                       </button>
-                      <span className="text-sm font-bold text-primary">
+                      <span className="text-sm font-semibold text-gray-900">
                         {index + 1}
                       </span>
                       <button
                         onClick={() => handleMovePlace(index, "down")}
                         disabled={index === places.length - 1}
-                        className="text-xs text-gray-500 hover:text-primary disabled:opacity-30"
+                        className="text-xs text-gray-500 hover:text-gray-900 disabled:opacity-30 transition-colors"
                       >
                         ▼
                       </button>
                     </div>
 
                     {/* Image */}
-                    <div className="w-16 h-16 bg-gray-200 rounded overflow-hidden shrink-0">
+                    <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden shrink-0">
                       {place.image ? (
                         <img
                           src={place.image}
@@ -306,7 +305,7 @@ const CourseEdit: React.FC = () => {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-2xl">
                           📷
                         </div>
                       )}
@@ -314,10 +313,10 @@ const CourseEdit: React.FC = () => {
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-text-primary truncate">
+                      <h3 className="font-semibold text-gray-900 truncate">
                         {place.title}
                       </h3>
-                      <p className="text-sm text-text-secondary truncate">
+                      <p className="text-sm text-gray-600 truncate">
                         {place.address}
                       </p>
                     </div>
@@ -328,13 +327,13 @@ const CourseEdit: React.FC = () => {
                       size="sm"
                       onClick={() => handleRemovePlace(index)}
                     >
-                      삭제
+                      {t("common.delete")}
                     </Button>
                   </div>
                 ))}
               </div>
             )}
-          </Card>
+          </div>
 
           {/* Actions */}
           <div className="flex gap-3 justify-end">

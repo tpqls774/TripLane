@@ -23,37 +23,31 @@ const Home: React.FC = () => {
       type: ThemeType.WELLNESS,
       icon: Sparkles,
       color: "bg-green-100 border-green-300",
-      actionText: "스파, 템플스테이 등 힐링 장소 찾기",
     },
     {
       type: ThemeType.PET_FRIENDLY,
       icon: PawPrint,
       color: "bg-yellow-100 border-yellow-300",
-      actionText: "반려동물과 함께 갈 수 있는 장소 찾기",
     },
     {
       type: ThemeType.HALLYU,
       icon: Theater,
       color: "bg-purple-100 border-purple-300",
-      actionText: "드라마·영화 촬영지와 K-POP 명소 찾기",
     },
     {
       type: ThemeType.GOURMET,
       icon: UtensilsCrossed,
       color: "bg-red-100 border-red-300",
-      actionText: "맛집과 전통 음식 체험 장소 찾기",
     },
     {
       type: ThemeType.CULTURE,
       icon: Landmark,
       color: "bg-blue-100 border-blue-300",
-      actionText: "박물관, 미술관, 공연장 등 문화시설 찾기",
     },
     {
       type: ThemeType.NATURE,
       icon: TreePine,
       color: "bg-emerald-100 border-emerald-300",
-      actionText: "국립공원, 트레킹 코스 등 자연 명소 찾기",
     },
   ];
 
@@ -83,7 +77,7 @@ const Home: React.FC = () => {
               onClick={() => document.getElementById('theme-section')?.scrollIntoView({ behavior: 'smooth' })}
               className="text-lg px-8 py-4"
             >
-              테마 선택하고 시작하기
+              {t("home.selectTheme")}
             </Button>
             <Button
               size="lg"
@@ -91,7 +85,7 @@ const Home: React.FC = () => {
               onClick={() => navigate("/places")}
               className="text-lg px-8 py-4"
             >
-              모든 장소 둘러보기
+              {t("home.browseAllPlaces")}
             </Button>
           </div>
         </div>
@@ -104,7 +98,7 @@ const Home: React.FC = () => {
             {t("theme.title")}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            원하는 테마를 선택하면 맞춤형 장소를 추천해드립니다
+            {t("home.themeSelectDesc")}
           </p>
         </div>
 
@@ -139,7 +133,7 @@ const Home: React.FC = () => {
                   {t(`theme.description.${theme.type}`)}
                 </p>
                 <p className="text-[#00d9b4] text-sm font-medium flex items-center gap-1">
-                  {theme.actionText}
+                  {t(`home.action.${theme.type}`)}
                   <span className="group-hover:translate-x-1 transition-transform">→</span>
                 </p>
               </div>
@@ -152,14 +146,13 @@ const Home: React.FC = () => {
       <div className="bg-gray-50 py-16">
         <div className="container mx-auto px-6 sm:px-12 text-center">
           <h2 className="text-3xl font-semibold text-gray-900 mb-4">
-            나만의 여행 코스 만들기
+            {t("home.createOwnCourse")}
           </h2>
           <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-            원하는 테마를 선택하고, 추천 장소를 골라 나만의 완벽한 여행 코스를
-            만들어보세요
+            {t("home.createCourseFeature")}
           </p>
           <Button onClick={() => navigate("/my-courses")} size="lg">
-            {t("nav.myCourses")} 보기
+            {t("nav.myCourses")} {t("home.viewMyCourses")}
           </Button>
         </div>
       </div>
