@@ -86,20 +86,30 @@ const MyCourses: React.FC = () => {
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-6 sm:px-12 py-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-12">
-          <div>
-            <h1 className="text-4xl sm:text-5xl font-semibold text-gray-900 tracking-tight">
-              {t("nav.myCourses")}
-            </h1>
-            <p className="text-gray-600 mt-2">나만의 여행 코스를 관리하세요</p>
+        <div className="mb-12">
+          <div className="flex items-center justify-between gap-6 mb-6">
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <BookOpen
+                  className="w-8 h-10 text-gray-900 sm:w-9"
+                  strokeWidth={1.5}
+                />
+                <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight">
+                  {t("nav.myCourses")}
+                </h1>
+              </div>
+              <p className="text-gray-600 text-lg">
+                나만의 여행 코스를 관리하세요
+              </p>
+            </div>
+            <Button
+              onClick={() => navigate("/places")}
+              className="whitespace-nowrap flex items-center gap-2"
+            >
+              <Plus className="w-5 h-5" strokeWidth={2} />
+              {t("course.create")}
+            </Button>
           </div>
-          <Button
-            onClick={() => navigate("/places")}
-            className="whitespace-nowrap flex items-center gap-2"
-          >
-            <Plus className="w-5 h-5" strokeWidth={2} />
-            {t("course.create")}
-          </Button>
         </div>
 
         {/* Error State */}

@@ -51,7 +51,7 @@ const Navbar: React.FC = () => {
               className={`px-4 py-2 rounded-xl font-medium text-sm transition-colors flex items-center gap-2 ${
                 isActive("/") && !location.pathname.startsWith("/recommend")
                   ? "text-gray-900"
-                  : "text-gray-600 hover:text-gray-900"
+                  : "text-gray-400 hover:text-gray-900"
               }`}
             >
               <Home className="w-4 h-4 lg:hidden" strokeWidth={2} />
@@ -62,7 +62,7 @@ const Navbar: React.FC = () => {
               className={`px-4 py-2 rounded-xl font-medium text-sm transition-colors flex items-center gap-2 ${
                 isActive("/places")
                   ? "text-gray-900"
-                  : "text-gray-600 hover:text-gray-900"
+                  : "text-gray-500 hover:text-gray-900"
               }`}
             >
               <Sparkles className="w-4 h-4 lg:hidden" strokeWidth={2} />
@@ -73,7 +73,7 @@ const Navbar: React.FC = () => {
               className={`px-4 py-2 rounded-xl font-medium text-sm transition-colors flex items-center gap-2 ${
                 isActive("/my-courses")
                   ? "text-gray-900"
-                  : "text-gray-600 hover:text-gray-900"
+                  : "text-gray-500 hover:text-gray-900"
               }`}
             >
               <BookOpen className="w-4 h-4 lg:hidden" strokeWidth={2} />
@@ -84,7 +84,7 @@ const Navbar: React.FC = () => {
               className={`px-4 py-2 rounded-xl font-medium text-sm transition-colors flex items-center gap-2 ${
                 isActive("/favorites")
                   ? "text-gray-900"
-                  : "text-gray-600 hover:text-gray-900"
+                  : "text-gray-500 hover:text-gray-900"
               }`}
             >
               <Heart

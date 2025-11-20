@@ -56,7 +56,7 @@ const Toast: React.FC<ToastProps> = ({
   message,
   type,
   onClose,
-  duration = 30000,
+  duration = 3000,
   confirmText = "확인",
   cancelText = "취소",
   onConfirm,
@@ -94,15 +94,15 @@ const Toast: React.FC<ToastProps> = ({
       <div
         role="status"
         aria-live="polite"
-        className={`pointer-events-auto relative min-w-[320px] max-w-md rounded-2xl border border-gray-200 bg-white p-5 text-gray-900 shadow-[0_12px_30px_rgba(15,23,42,0.08)] ${styles.accent} animate-toast-slide-in`}
+        className={`pointer-events-auto relative min-w-[320px] max-w-md rounded-2xl border border-gray-200 bg-white p-3.5 text-gray-900 shadow-[0_12px_30px_rgba(15,23,42,0.08)] ${styles.accent} animate-toast-slide-in`}
       >
-        <div className="flex items-start gap-3">
+        <div className="flex gap-3 items-center">
           <div
             className={`flex h-10 w-10 items-center justify-center rounded-full ${styles.badge} ${styles.badgeText}`}
           >
             {styles.icon}
           </div>
-          <div className="flex-1 text-sm leading-relaxed items-center">
+          <div className="flex-1 text-sm leading-relaxed">
             <p>{message}</p>
             {isConfirm && (
               <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-end">

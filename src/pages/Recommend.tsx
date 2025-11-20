@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Compass } from "lucide-react";
 import { getAreaBasedList } from "../services/tourismApi";
 import { ContentType, ThemeType } from "../types";
 import type { TourismPlace, CoursePlace, ThemeTypeValue } from "../types";
@@ -152,14 +152,20 @@ const Recommend: React.FC = () => {
       <div className="container mx-auto px-6 sm:px-12 py-8">
         {/* Header */}
         <div className="mb-12">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-6">
+          <div className="flex items-center justify-between gap-6 mb-6">
             <div>
-              <p className="text-sm text-gray-600 mb-2">
+              <div className="flex items-center gap-3 mb-3">
+                <Compass
+                  className="w-8 h-10 text-gray-900 sm:w-9"
+                  strokeWidth={1.5}
+                />
+                <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight">
+                  {t("recommend.title")}
+                </h1>
+              </div>
+              <p className="text-gray-600 text-lg">
                 {t("recommend.selectedTheme")}: {t(`theme.${theme}`)}
               </p>
-              <h1 className="text-4xl sm:text-5xl font-semibold text-gray-900 tracking-tight">
-                {t("recommend.title")}
-              </h1>
             </div>
 
             <div className="flex gap-3">

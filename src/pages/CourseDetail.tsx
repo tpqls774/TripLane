@@ -230,7 +230,7 @@ const CourseDetail: React.FC = () => {
               >
                 <div className="flex flex-col sm:flex-row">
                   {/* Place Image */}
-                  <div className="sm:w-64 aspect-video sm:aspect-square bg-gray-200 flex-shrink-0">
+                  <div className="sm:w-64 aspect-video sm:aspect-square bg-gray-200 shrink-0">
                     {place.image ? (
                       <img
                         src={place.image}
@@ -247,7 +247,7 @@ const CourseDetail: React.FC = () => {
                   {/* Place Info */}
                   <div className="flex-1 p-6">
                     <div className="flex items-start gap-4 mb-3">
-                      <div className="flex items-center justify-center w-8 h-8 bg-gray-900 text-white rounded-full font-semibold text-sm flex-shrink-0 mt-1">
+                      <div className="flex items-center justify-center w-8 h-8 bg-gray-900 text-white rounded-full font-semibold text-sm shrink-0 mt-1">
                         {index + 1}
                       </div>
                       <div className="flex-1">
@@ -256,7 +256,7 @@ const CourseDetail: React.FC = () => {
                         </h3>
                         <p className="text-gray-600 text-sm mb-4 flex items-start gap-2">
                           <MapPin
-                            className="w-4 h-4 flex-shrink-0 mt-0.5"
+                            className="w-4 h-4 shrink-0 mt-0.5"
                             strokeWidth={2}
                           />
                           {place.address}

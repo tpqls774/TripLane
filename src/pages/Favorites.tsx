@@ -60,14 +60,20 @@ const Favorites: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4 max-w-6xl">
-        <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-2">
-            내 즐겨찾기
-          </h1>
+    <div className="min-h-screen bg-white">
+      <div className="container mx-auto px-6 sm:px-12 py-8">
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-3">
+            <Heart
+              className="w-8 h-10 text-gray-900 sm:w-9"
+              strokeWidth={1.5}
+            />
+            <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight">
+              내 즐겨찾기
+            </h1>
+          </div>
           {!loading && (
-            <p className="text-text-secondary">
+            <p className="text-gray-600 text-lg">
               총 {favorites.length}개의 장소
             </p>
           )}
