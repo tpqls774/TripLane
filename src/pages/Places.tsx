@@ -21,7 +21,11 @@ const Places: React.FC = () => {
   const navigate = useNavigate();
 
   const [places, setPlaces] = useState<TourismPlace[]>([]);
-  const [selectedPlaces, setSelectedPlaces] = useState<CoursePlace[]>([]);
+  const [selectedPlaces, setSelectedPlaces] = useState<CoursePlace[]>(() => {
+    // Load from sessionStorage on mount
+    const saved = sessionStorage.getItem("selectedPlaces");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedContentType, setSelectedContentType] = useState<string>("all");
@@ -34,15 +38,20 @@ const Places: React.FC = () => {
     type: "success" | "error" | "info";
   } | null>(null);
 
+  // Save to sessionStorage whenever selectedPlaces changes
+  useEffect(() => {
+    sessionStorage.setItem("selectedPlaces", JSON.stringify(selectedPlaces));
+  }, [selectedPlaces]);
+
   const contentTypes = [
-    { id: "all", label: "전체" },
-    { id: ContentType.TOURIST_SPOT, label: "관광지" },
-    { id: ContentType.CULTURE, label: "문화시설" },
-    { id: ContentType.FESTIVAL, label: "축제/행사" },
-    { id: ContentType.LEPORTS, label: "레포츠" },
-    { id: ContentType.ACCOMMODATION, label: "숙박" },
-    { id: ContentType.SHOPPING, label: "쇼핑" },
-    { id: ContentType.RESTAURANT, label: "음식점" },
+    { id: "all", label: t("common.all") },
+    { id: ContentType.TOURIST_SPOT, label: t("place.touristSpot") },
+    { id: ContentType.CULTURE, label: t("place.culture") },
+    { id: ContentType.FESTIVAL, label: t("place.festival") },
+    { id: ContentType.LEPORTS, label: t("place.leports") },
+    { id: ContentType.ACCOMMODATION, label: t("place.accommodation") },
+    { id: ContentType.SHOPPING, label: t("place.shopping") },
+    { id: ContentType.RESTAURANT, label: t("place.restaurant") },
   ];
 
   useEffect(() => {
@@ -124,7 +133,7 @@ const Places: React.FC = () => {
       setSelectedPlaces(
         selectedPlaces.filter((p) => p.placeId !== place.contentid)
       );
-      setToast({ message: "코스에서 제거되었습니다", type: "info" });
+      setToast({ message: t("common.removedFromCourse"), type: "info" });
     } else {
       const newPlace: CoursePlace = {
         placeId: place.contentid,
@@ -137,18 +146,20 @@ const Places: React.FC = () => {
         order: selectedPlaces.length,
       };
       setSelectedPlaces([...selectedPlaces, newPlace]);
-      setToast({ message: "코스에 추가되었습니다", type: "success" });
+      setToast({ message: t("common.addedToCourse"), type: "success" });
     }
   };
 
   const handleSaveCourse = () => {
     if (selectedPlaces.length === 0) {
       setToast({
-        message: "최소 1개 이상의 장소를 선택해주세요",
+        message: t("course.addMinPlace"),
         type: "error",
       });
       return;
     }
+    // Clear sessionStorage when creating course
+    sessionStorage.removeItem("selectedPlaces");
     navigate("/course/new", { state: { places: selectedPlaces } });
   };
 
@@ -160,7 +171,7 @@ const Places: React.FC = () => {
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-6 sm:px-12 py-8">
         {/* Header */}
-        <div className="mb-12">
+        <div className="mb-8">
           <div className="flex items-center gap-3 mb-3">
             <MapPin
               className="w-8 h-10 text-gray-900 sm:w-9"
@@ -171,7 +182,7 @@ const Places: React.FC = () => {
             </h1>
           </div>
           <p className="text-gray-600 text-lg">
-            전국의 다양한 관광지와 장소를 찾아보세요
+            {t("place.searchPlaces")}
           </p>
         </div>
 
@@ -188,12 +199,12 @@ const Places: React.FC = () => {
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                placeholder="장소 이름이나 주소로 검색하세요"
+                placeholder={t("place.searchPlaceholder")}
                 className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
               />
             </div>
             <Button onClick={handleSearch} className="flex items-center gap-2">
-              <span className="hidden sm:inline">검색</span>
+              <span className="hidden sm:inline">{t("common.search")}</span>
             </Button>
           </div>
         </div>
@@ -205,7 +216,7 @@ const Places: React.FC = () => {
               className="w-5 h-5 text-gray-700"
               strokeWidth={2}
             />
-            <span className="font-semibold text-gray-900">카테고리</span>
+            <span className="font-semibold text-gray-900">{t("common.category")}</span>
           </div>
           <div className="flex flex-wrap gap-2">
             {contentTypes.map((type) => (
@@ -259,24 +270,24 @@ const Places: React.FC = () => {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
                   <div>
                     <span className="text-gray-900 font-semibold text-lg">
-                      {selectedPlaces.length}개의 장소 선택됨
+                      {selectedPlaces.length}{t("common.placeCount")} {t("common.selected")}
                     </span>
                     <p className="text-gray-600 text-sm mt-1">
-                      선택한 장소로 나만의 코스를 만들어보세요
+                      {t("common.createCourseDesc")}
                     </p>
                   </div>
                   <Button
                     onClick={handleSaveCourse}
                     className="whitespace-nowrap"
                   >
-                    코스 생성
+                    {t("common.createCourse")}
                   </Button>
                 </div>
 
                 {/* Selected Places List */}
                 <div className="border-t border-gray-200 pt-4 mt-4">
                   <h3 className="text-sm font-semibold text-gray-900 mb-3">
-                    선택된 장소
+                    {t("common.selectedPlaces")}
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {selectedPlaces.map((place, index) => (
@@ -284,7 +295,7 @@ const Places: React.FC = () => {
                         key={place.placeId}
                         className="flex items-center gap-3 bg-white rounded-lg p-3 border border-gray-200"
                       >
-                        <div className="flex items-center justify-center w-6 h-6 bg-gray-900 text-white rounded-full text-xs font-semibold flex-shrink-0">
+                        <div className="flex items-center justify-center w-6 h-6 bg-gray-900 text-white rounded-full text-xs font-semibold shrink-0">
                           {index + 1}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -304,8 +315,8 @@ const Places: React.FC = () => {
                               togglePlaceSelection(originalPlace);
                             }
                           }}
-                          className="flex-shrink-0 p-1 text-gray-400 hover:text-red-500 transition-colors"
-                          aria-label="제거"
+                          className="shrink-0 p-1 text-gray-400 hover:text-red-500 transition-colors"
+                          aria-label={t("common.remove")}
                         >
                           <svg
                             className="w-5 h-5"
@@ -330,11 +341,11 @@ const Places: React.FC = () => {
 
             <div className="mb-6 flex items-center justify-between">
               <p className="text-gray-600">
-                총{" "}
+                {t("common.totalPlaces")}{" "}
                 <span className="font-semibold text-gray-900">
                   {places.length}
                 </span>
-                개의 장소
+                {t("common.placeCount")}
               </p>
             </div>
 
@@ -430,7 +441,7 @@ const Places: React.FC = () => {
                     1,
                     currentPage - Math.floor(maxVisiblePages / 2)
                   );
-                  let endPage = Math.min(
+                  const endPage = Math.min(
                     totalPages,
                     startPage + maxVisiblePages - 1
                   );

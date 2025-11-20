@@ -10,7 +10,23 @@
     "close": "Close",
     "confirm": "Confirm",
     "search": "Search",
-    "back": "Back"
+    "back": "Back",
+    "viewDetails": "View Details",
+    "placeCount": "places",
+    "selected": "Selected",
+    "basicInfo": "Basic Information",
+    "addPlace": "Add Place",
+    "noPlacesAdded": "No places added",
+    "totalPlaces": "Total",
+    "update": "Updated",
+    "createCourse": "Create Course",
+    "selectedPlaces": "Selected Places",
+    "createCourseDesc": "Create your own course with selected places",
+    "remove": "Remove",
+    "addedToCourse": "Added to course",
+    "removedFromCourse": "Removed from course",
+    "all": "All",
+    "category": "Category"
   },
   "nav": {
     "home": "Home",
@@ -18,7 +34,10 @@
     "recommend": "Recommendations",
     "myCourses": "My Courses",
     "favorites": "Favorites",
-    "language": "Language"
+    "language": "Language",
+    "myFavorites": "My Favorites",
+    "noFavorites": "No favorite places",
+    "addFavoritesDesc": "Add interesting places to your favorites"
   },
   "theme": {
     "title": "Choose Your Theme",
@@ -40,7 +59,21 @@
   "home": {
     "title": "TripLane",
     "subtitle": "Create your personalized travel itinerary",
-    "startButton": "Start Your Journey"
+    "startButton": "Start Your Journey",
+    "createOwnCourse": "Create Your Travel Course",
+    "selectTheme": "Select a Theme to Start",
+    "browseAllPlaces": "Browse All Places",
+    "themeSelectDesc": "Choose your preferred theme and we'll recommend places tailored for you",
+    "createCourseFeature": "Select your preferred theme, choose recommended places, and create your perfect travel itinerary",
+    "viewMyCourses": "View",
+    "action": {
+      "wellness": "Find healing places like spas and temple stays",
+      "petFriendly": "Find pet-friendly places",
+      "hallyu": "Find K-Drama filming locations and K-POP venues",
+      "gourmet": "Find restaurants and traditional food experiences",
+      "culture": "Find museums, galleries, and cultural venues",
+      "nature": "Find national parks and nature trails"
+    }
   },
   "recommend": {
     "title": "Recommended Itinerary",
@@ -52,7 +85,8 @@
     "viewMap": "View Map",
     "viewList": "View List",
     "noPlaces": "No places found",
-    "selectedPlaces": "Selected Places"
+    "selectedPlaces": "Selected Places",
+    "mapClickInfo": "Click on map markers to add/remove places from your course"
   },
   "course": {
     "create": "Create New Course",
@@ -73,7 +107,22 @@
     "updateError": "Failed to update course",
     "deleteConfirm": "Are you sure you want to delete this?",
     "share": "Share",
-    "copyLink": "Copy Link"
+    "copyLink": "Copy Link",
+    "manageCourses": "Manage your travel courses",
+    "titlePlaceholder": "e.g., Seoul Healing 2-Day Trip",
+    "descriptionPlaceholder": "Enter a description for the course",
+    "enterTitle": "Please enter a course title",
+    "addMinPlace": "Please add at least one place",
+    "enterInfo": "Enter travel course information",
+    "linkCopied": "Link copied to clipboard",
+    "notFound": "Course not found",
+    "backToMyCourses": "Back to My Courses",
+    "courseMap": "Course Map",
+    "showRoute": "Show Route",
+    "visitPlaces": "Places to Visit",
+    "totalDistance": "Total Distance",
+    "toNextPlace": "To next place",
+    "about": "About"
   },
   "place": {
     "details": "Details",
@@ -90,7 +139,21 @@
     "festival": "Festival/Event",
     "culture": "Cultural Facility",
     "leports": "Leisure Sports",
-    "shopping": "Shopping"
+    "shopping": "Shopping",
+    "searchPlaces": "Discover tourist attractions and places nationwide",
+    "searchPlaceholder": "Enter place name",
+    "keywordRequired": "Please enter a search keyword",
+    "noResults": "No search results",
+    "noResultsDesc": "Try a different search term",
+    "addToFavorite": "Added to favorites",
+    "removeFromFavorite": "Removed from favorites",
+    "addToFavoriteError": "Failed to add to favorites",
+    "removeFromFavoriteError": "Failed to remove from favorites",
+    "notFound": "Place not found",
+    "homepageVisit": "Visit Website",
+    "restDate": "Closed Days",
+    "parking": "Parking Info",
+    "petFriendly": "Pet-Friendly"
   },
   "error": {
     "networkError": "Network error occurred",

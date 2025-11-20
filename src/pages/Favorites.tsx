@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/AuthContext";
 import { getUserFavorites, removeFavorite } from "../services/favoriteService";
 import type { Favorite } from "../types/favorite";
@@ -11,6 +12,7 @@ import { Heart } from "lucide-react";
 
 const Favorites: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { currentUser } = useAuth();
 
   const [favorites, setFavorites] = useState<Favorite[]>([]);
@@ -38,7 +40,7 @@ const Favorites: React.FC = () => {
       setFavorites(userFavorites);
     } catch (err) {
       console.error("즐겨찾기 목록 조회 실패:", err);
-      setError("즐겨찾기 목록을 불러오는데 실패했습니다.");
+      setError(t("error.apiError"));
     } finally {
       setLoading(false);
     }
@@ -48,10 +50,10 @@ const Favorites: React.FC = () => {
     try {
       await removeFavorite(favoriteId);
       setFavorites(favorites.filter((fav) => fav.id !== favoriteId));
-      setToast({ message: "즐겨찾기에서 제거되었습니다", type: "success" });
+      setToast({ message: t("place.removeFromFavorite"), type: "success" });
     } catch (error) {
       console.error("즐겨찾기 제거 실패:", error);
-      setToast({ message: "즐겨찾기 제거에 실패했습니다", type: "error" });
+      setToast({ message: t("place.removeFromFavoriteError"), type: "error" });
     }
   };
 
@@ -69,12 +71,12 @@ const Favorites: React.FC = () => {
               strokeWidth={1.5}
             />
             <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight">
-              내 즐겨찾기
+              {t("nav.myFavorites")}
             </h1>
           </div>
           {!loading && (
             <p className="text-gray-600 text-lg">
-              총 {favorites.length}개의 장소
+              {t("common.totalPlaces")} {favorites.length}{t("common.placeCount")}
             </p>
           )}
         </div>
@@ -97,9 +99,9 @@ const Favorites: React.FC = () => {
               strokeWidth={1.5}
             />
             <h2 className="text-2xl font-semibold text-gray-900 mb-3 tracking-tight">
-              즐겨찾기한 장소가 없습니다
+              {t("nav.noFavorites")}
             </h2>
-            <p className="text-gray-600 mb-8">관심있는 장소를 즐겨찾기에 추가해보세요</p>
+            <p className="text-gray-600 mb-8">{t("nav.addFavoritesDesc")}</p>
           </div>
         )}
 
@@ -156,7 +158,7 @@ const Favorites: React.FC = () => {
                       }
                       className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors text-sm font-medium"
                     >
-                      상세보기
+                      {t("common.viewDetails")}
                     </button>
                     <button
                       onClick={() =>

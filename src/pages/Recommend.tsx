@@ -18,7 +18,11 @@ const Recommend: React.FC = () => {
   const theme = searchParams.get("theme") as ThemeTypeValue;
 
   const [places, setPlaces] = useState<TourismPlace[]>([]);
-  const [selectedPlaces, setSelectedPlaces] = useState<CoursePlace[]>([]);
+  const [selectedPlaces, setSelectedPlaces] = useState<CoursePlace[]>(() => {
+    // Load from sessionStorage on mount
+    const saved = sessionStorage.getItem("selectedPlacesRecommend");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
@@ -29,6 +33,11 @@ const Recommend: React.FC = () => {
     message: string;
     type: "success" | "error" | "info";
   } | null>(null);
+
+  // Save to sessionStorage whenever selectedPlaces changes
+  useEffect(() => {
+    sessionStorage.setItem("selectedPlacesRecommend", JSON.stringify(selectedPlaces));
+  }, [selectedPlaces]);
 
   useEffect(() => {
     if (!theme) {
@@ -134,6 +143,8 @@ const Recommend: React.FC = () => {
       setToast({ message: "최소 1개 이상의 장소를 선택해주세요", type: "error" });
       return;
     }
+    // Clear sessionStorage when creating course
+    sessionStorage.removeItem("selectedPlacesRecommend");
     navigate("/course/new", { state: { theme, places: selectedPlaces } });
   };
 
@@ -194,18 +205,73 @@ const Recommend: React.FC = () => {
 
           {/* Selected Places Info */}
           {selectedPlaces.length > 0 && (
-            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div>
-                <span className="text-gray-900 font-semibold text-lg">
-                  {selectedPlaces.length}개의 장소 선택됨
-                </span>
-                <p className="text-gray-600 text-sm mt-1">
-                  선택한 장소로 나만의 코스를 만들어보세요
-                </p>
+            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+                <div>
+                  <span className="text-gray-900 font-semibold text-lg">
+                    {selectedPlaces.length}{t("common.placeCount")} {t("common.selected")}
+                  </span>
+                  <p className="text-gray-600 text-sm mt-1">
+                    {t("common.createCourseDesc")}
+                  </p>
+                </div>
+                <Button onClick={handleSaveCourse} className="whitespace-nowrap">
+                  {t("recommend.saveCourse")}
+                </Button>
               </div>
-              <Button onClick={handleSaveCourse} className="whitespace-nowrap">
-                {t("recommend.saveCourse")}
-              </Button>
+
+              {/* Selected Places List */}
+              <div className="border-t border-gray-200 pt-4 mt-4">
+                <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                  {t("common.selectedPlaces")}
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {selectedPlaces.map((place, index) => (
+                    <div
+                      key={place.placeId}
+                      className="flex items-center gap-3 bg-white rounded-lg p-3 border border-gray-200"
+                    >
+                      <div className="flex items-center justify-center w-6 h-6 bg-gray-900 text-white rounded-full text-xs font-semibold shrink-0">
+                        {index + 1}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-semibold text-gray-900 truncate">
+                          {place.title}
+                        </h4>
+                        <p className="text-xs text-gray-600 truncate">
+                          {place.address}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          const originalPlace = places.find(
+                            (p) => p.contentid === place.placeId
+                          );
+                          if (originalPlace) {
+                            togglePlaceSelection(originalPlace);
+                          }
+                        }}
+                        className="shrink-0 p-1 text-gray-400 hover:text-red-500 transition-colors"
+                        aria-label={t("common.remove")}
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -236,7 +302,7 @@ const Recommend: React.FC = () => {
               <>
                 <div className="mb-6 flex items-center justify-between">
                   <p className="text-gray-600">
-                    총 <span className="font-semibold text-gray-900">{places.length}</span>개의 장소
+                    {t("common.totalPlaces")} <span className="font-semibold text-gray-900">{places.length}</span>{t("common.placeCount")}
                   </p>
                 </div>
 
@@ -378,7 +444,7 @@ const Recommend: React.FC = () => {
 
             {/* Map View */}
             {viewMode === "map" && (
-              <div className="bg-white rounded-xl shadow-md p-4">
+              <div className="bg-white rounded-xl p-4">
                 <MultiPlaceMap
                   places={places.map((place) => ({
                     placeId: place.contentid,
@@ -395,8 +461,8 @@ const Recommend: React.FC = () => {
                     }
                   }}
                 />
-                <div className="mt-4 text-sm text-text-secondary text-center">
-                  💡 지도의 마커를 클릭하면 코스에 추가/제거할 수 있습니다
+                <div className="mt-4 text-sm text-gray-600 text-center">
+                  {t("recommend.mapClickInfo")}
                 </div>
               </div>
             )}
