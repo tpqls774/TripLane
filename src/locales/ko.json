@@ -1,0 +1,118 @@
+{
+  "common": {
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다",
+    "success": "성공했습니다",
+    "save": "저장",
+    "cancel": "취소",
+    "delete": "삭제",
+    "edit": "수정",
+    "close": "닫기",
+    "confirm": "확인",
+    "search": "검색",
+    "back": "뒤로가기"
+  },
+  "nav": {
+    "home": "홈",
+    "places": "장소",
+    "recommend": "추천 코스",
+    "myCourses": "내 코스",
+    "favorites": "즐겨찾기",
+    "language": "언어"
+  },
+  "theme": {
+    "title": "테마를 선택하세요",
+    "wellness": "웰니스 힐링",
+    "petFriendly": "반려동물 동반",
+    "hallyu": "한류/전통 체험",
+    "gourmet": "미식 여행",
+    "culture": "문화 탐방",
+    "nature": "자연 여행",
+    "description": {
+      "wellness": "힐링과 여유를 찾는 여행",
+      "petFriendly": "반려동물과 함께하는 여행",
+      "hallyu": "한국의 전통과 한류를 체험",
+      "gourmet": "맛있는 음식을 찾아가는 여행",
+      "culture": "문화와 예술을 즐기는 여행",
+      "nature": "자연 속에서 휴식하는 여행"
+    }
+  },
+  "home": {
+    "title": "TripLane",
+    "subtitle": "당신만의 특별한 여행 코스를 만들어보세요",
+    "startButton": "여행 시작하기"
+  },
+  "recommend": {
+    "title": "추천 코스",
+    "selectedTheme": "선택한 테마",
+    "places": "추천 장소",
+    "addToCourse": "코스에 추가",
+    "removeFromCourse": "코스에서 제거",
+    "saveCourse": "코스 저장하기",
+    "viewMap": "지도 보기",
+    "viewList": "목록 보기",
+    "noPlaces": "추천 장소가 없습니다",
+    "selectedPlaces": "선택한 장소"
+  },
+  "course": {
+    "create": "새 코스 만들기",
+    "title": "코스 제목",
+    "description": "코스 설명",
+    "theme": "테마",
+    "startDate": "시작일",
+    "endDate": "종료일",
+    "travelers": "여행 인원",
+    "places": "장소",
+    "noCourses": "저장된 코스가 없습니다",
+    "createNew": "새로운 코스를 만들어보세요",
+    "saveSuccess": "코스가 저장되었습니다",
+    "saveError": "코스 저장에 실패했습니다",
+    "deleteSuccess": "코스가 삭제되었습니다",
+    "deleteError": "코스 삭제에 실패했습니다",
+    "updateSuccess": "코스가 수정되었습니다",
+    "updateError": "코스 수정에 실패했습니다",
+    "deleteConfirm": "정말 삭제하시겠습니까?",
+    "share": "공유하기",
+    "copyLink": "링크 복사"
+  },
+  "place": {
+    "details": "상세 정보",
+    "address": "주소",
+    "phone": "전화번호",
+    "openingHours": "운영 시간",
+    "price": "요금",
+    "website": "웹사이트",
+    "images": "사진",
+    "overview": "개요",
+    "touristSpot": "관광지",
+    "restaurant": "음식점",
+    "accommodation": "숙박",
+    "festival": "축제/행사",
+    "culture": "문화시설",
+    "leports": "레포츠",
+    "shopping": "쇼핑"
+  },
+  "error": {
+    "networkError": "네트워크 오류가 발생했습니다",
+    "apiError": "데이터를 불러오는데 실패했습니다",
+    "notFound": "페이지를 찾을 수 없습니다",
+    "retry": "다시 시도"
+  },
+  "auth": {
+    "login": "로그인",
+    "logout": "로그아웃",
+    "signup": "회원가입",
+    "email": "이메일",
+    "password": "비밀번호",
+    "confirmPassword": "비밀번호 확인",
+    "displayName": "이름",
+    "displayNamePlaceholder": "홍길동",
+    "loginDesc": "계정에 로그인하세요",
+    "signupDesc": "새 계정을 만드세요",
+    "noAccount": "계정이 없으신가요?",
+    "hasAccount": "이미 계정이 있으신가요?",
+    "passwordMismatch": "비밀번호가 일치하지 않습니다",
+    "passwordTooShort": "비밀번호는 최소 6자 이상이어야 합니다",
+    "loginRequired": "로그인이 필요합니다"
+  }
+}

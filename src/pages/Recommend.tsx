@@ -1,0 +1,413 @@
+import React, { useState, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { getAreaBasedList } from "../services/tourismApi";
+import { ContentType, ThemeType } from "../types";
+import type { TourismPlace, CoursePlace, ThemeTypeValue } from "../types";
+import ErrorMessage from "../components/ErrorMessage";
+import MultiPlaceMap from "../components/MultiPlaceMap";
+import Button from "../components/Button";
+import PlaceSkeleton from "../components/PlaceSkeleton";
+import Toast from "../components/Toast";
+
+const Recommend: React.FC = () => {
+  const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const theme = searchParams.get("theme") as ThemeTypeValue;
+
+  const [places, setPlaces] = useState<TourismPlace[]>([]);
+  const [selectedPlaces, setSelectedPlaces] = useState<CoursePlace[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<"list" | "map">("list");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const itemsPerPage = 20;
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error" | "info";
+  } | null>(null);
+
+  useEffect(() => {
+    if (!theme) {
+      navigate("/");
+      return;
+    }
+    setCurrentPage(1);
+    fetchPlaces(1);
+  }, [theme]);
+
+  const fetchPlaces = async (page: number = currentPage) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // 테마에 따라 다른 컨텐츠 타입 조회
+      const contentTypes = getContentTypesByTheme(theme);
+      const allPlaces: TourismPlace[] = [];
+      let total = 0;
+
+      for (const contentType of contentTypes) {
+        const response = await getAreaBasedList({
+          contentTypeId: contentType,
+          numOfRows: itemsPerPage,
+          pageNo: page,
+        });
+
+        if (response.response.body.items.item) {
+          allPlaces.push(...response.response.body.items.item);
+        }
+        total += response.response.body.totalCount || 0;
+      }
+
+      setPlaces(allPlaces);
+      setTotalCount(total);
+    } catch (err) {
+      console.error("Failed to fetch places:", err);
+      setError(t("error.apiError"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getContentTypesByTheme = (theme: ThemeTypeValue): string[] => {
+    switch (theme) {
+      case ThemeType.WELLNESS:
+        return [
+          ContentType.TOURIST_SPOT,
+          ContentType.ACCOMMODATION,
+          ContentType.LEPORTS,
+        ];
+      case ThemeType.PET_FRIENDLY:
+        return [ContentType.TOURIST_SPOT, ContentType.ACCOMMODATION];
+      case ThemeType.HALLYU:
+        return [
+          ContentType.CULTURE,
+          ContentType.FESTIVAL,
+          ContentType.TOURIST_SPOT,
+        ];
+      case ThemeType.GOURMET:
+        return [ContentType.RESTAURANT, ContentType.TOURIST_SPOT];
+      case ThemeType.CULTURE:
+        return [
+          ContentType.CULTURE,
+          ContentType.TOURIST_SPOT,
+          ContentType.FESTIVAL,
+        ];
+      case ThemeType.NATURE:
+        return [ContentType.TOURIST_SPOT, ContentType.LEPORTS];
+      default:
+        return [ContentType.TOURIST_SPOT];
+    }
+  };
+
+  const togglePlaceSelection = (place: TourismPlace) => {
+    const isSelected = selectedPlaces.some(
+      (p) => p.placeId === place.contentid
+    );
+
+    if (isSelected) {
+      setSelectedPlaces(
+        selectedPlaces.filter((p) => p.placeId !== place.contentid)
+      );
+      setToast({ message: t("recommend.removeFromCourse"), type: "info" });
+    } else {
+      const newPlace: CoursePlace = {
+        placeId: place.contentid,
+        title: place.title,
+        address: place.addr1,
+        image: place.firstimage,
+        contentType: place.contenttypeid,
+        lat: parseFloat(place.mapy),
+        lng: parseFloat(place.mapx),
+        order: selectedPlaces.length,
+      };
+      setSelectedPlaces([...selectedPlaces, newPlace]);
+      setToast({ message: t("recommend.addToCourse"), type: "success" });
+    }
+  };
+
+  const handleSaveCourse = () => {
+    if (selectedPlaces.length === 0) {
+      setToast({ message: "최소 1개 이상의 장소를 선택해주세요", type: "error" });
+      return;
+    }
+    navigate("/course/new", { state: { theme, places: selectedPlaces } });
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    fetchPlaces(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const isPlaceSelected = (placeId: string) => {
+    return selectedPlaces.some((p) => p.placeId === placeId);
+  };
+
+  return (
+    <div className="min-h-screen bg-white">
+      <div className="container mx-auto px-6 sm:px-12 py-8">
+        {/* Header */}
+        <div className="mb-12">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-6">
+            <div>
+              <p className="text-sm text-gray-600 mb-2">
+                {t("recommend.selectedTheme")}: {t(`theme.${theme}`)}
+              </p>
+              <h1 className="text-4xl sm:text-5xl font-semibold text-gray-900 tracking-tight">
+                {t("recommend.title")}
+              </h1>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setViewMode("list")}
+                className={`px-5 py-2.5 rounded-xl font-medium transition-all ${
+                  viewMode === "list"
+                    ? "bg-gray-900 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                {t("recommend.viewList")}
+              </button>
+              <button
+                onClick={() => setViewMode("map")}
+                className={`px-5 py-2.5 rounded-xl font-medium transition-all ${
+                  viewMode === "map"
+                    ? "bg-gray-900 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                {t("recommend.viewMap")}
+              </button>
+            </div>
+          </div>
+
+          {/* Selected Places Info */}
+          {selectedPlaces.length > 0 && (
+            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <span className="text-gray-900 font-semibold text-lg">
+                  {selectedPlaces.length}개의 장소 선택됨
+                </span>
+                <p className="text-gray-600 text-sm mt-1">
+                  선택한 장소로 나만의 코스를 만들어보세요
+                </p>
+              </div>
+              <Button onClick={handleSaveCourse} className="whitespace-nowrap">
+                {t("recommend.saveCourse")}
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {/* Error State */}
+        {error && <ErrorMessage message={error} onRetry={() => fetchPlaces()} />}
+
+        {/* Loading Skeleton */}
+        {loading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
+            <PlaceSkeleton count={20} />
+          </div>
+        )}
+
+        {/* Places Grid */}
+        {!error && places.length === 0 && !loading && (
+          <div className="text-center py-12">
+            <p className="text-text-secondary text-lg">
+              {t("recommend.noPlaces")}
+            </p>
+          </div>
+        )}
+
+        {!error && !loading && places.length > 0 && (
+          <>
+            {/* List View */}
+            {viewMode === "list" && (
+              <>
+                <div className="mb-6 flex items-center justify-between">
+                  <p className="text-gray-600">
+                    총 <span className="font-semibold text-gray-900">{places.length}</span>개의 장소
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
+                  {places.map((place) => (
+                    <div key={place.contentid} className="group cursor-pointer">
+                      {/* Image */}
+                      <div className="relative aspect-square rounded-2xl overflow-hidden mb-3">
+                        {place.firstimage ? (
+                          <img
+                            src={place.firstimage}
+                            alt={place.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            onClick={() =>
+                              navigate(`/place/${place.contentid}`, {
+                                state: { contentTypeId: place.contenttypeid },
+                              })
+                            }
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-300 text-6xl">
+                            📷
+                          </div>
+                        )}
+                        {/* Select Button Overlay */}
+                        <button
+                          onClick={() => togglePlaceSelection(place)}
+                          className={`absolute top-4 right-4 p-2.5 rounded-full transition-all ${
+                            isPlaceSelected(place.contentid)
+                              ? "bg-gray-900 text-white"
+                              : "bg-white/90 hover:bg-white text-gray-700"
+                          }`}
+                        >
+                          {isPlaceSelected(place.contentid) ? (
+                            <svg
+                              className="w-5 h-5"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          ) : (
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 4v16m8-8H4"
+                              />
+                            </svg>
+                          )}
+                        </button>
+                      </div>
+
+                      {/* Content */}
+                      <div
+                        className="pl-1"
+                        onClick={() =>
+                          navigate(`/place/${place.contentid}`, {
+                            state: { contentTypeId: place.contenttypeid },
+                          })
+                        }
+                      >
+                        <h3 className="text-base font-semibold text-gray-900 line-clamp-1">
+                          {place.title}
+                        </h3>
+                        <p className="text-sm text-gray-600 line-clamp-1">
+                          {place.addr1}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalCount > itemsPerPage && (
+                  <div className="flex justify-center items-center gap-2">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="p-2 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      aria-label="이전 페이지"
+                    >
+                      <ChevronLeft className="w-5 h-5" strokeWidth={2} />
+                    </button>
+
+                    {(() => {
+                      const totalPages = Math.ceil(totalCount / itemsPerPage);
+                      const maxVisiblePages = 5;
+                      const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                      const calculatedEndPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+                      const endPage = calculatedEndPage - startPage + 1 < maxVisiblePages
+                        ? Math.min(totalPages, Math.max(1, calculatedEndPage - maxVisiblePages + 1) + maxVisiblePages - 1)
+                        : calculatedEndPage;
+                      const finalStartPage = endPage - startPage + 1 < maxVisiblePages
+                        ? Math.max(1, endPage - maxVisiblePages + 1)
+                        : startPage;
+
+                      const pages = [];
+                      for (let i = finalStartPage; i <= endPage; i++) {
+                        pages.push(
+                          <button
+                            key={i}
+                            onClick={() => handlePageChange(i)}
+                            className={`px-4 py-2 rounded-xl font-medium text-sm transition-all ${
+                              currentPage === i
+                                ? "bg-[#00d9b4] text-white"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                            }`}
+                          >
+                            {i}
+                          </button>
+                        );
+                      }
+                      return pages;
+                    })()}
+
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage >= Math.ceil(totalCount / itemsPerPage)}
+                      className="p-2 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      aria-label="다음 페이지"
+                    >
+                      <ChevronRight className="w-5 h-5" strokeWidth={2} />
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Map View */}
+            {viewMode === "map" && (
+              <div className="bg-white rounded-xl shadow-md p-4">
+                <MultiPlaceMap
+                  places={places.map((place) => ({
+                    placeId: place.contentid,
+                    title: place.title,
+                    lat: parseFloat(place.mapy),
+                    lng: parseFloat(place.mapx),
+                    address: place.addr1,
+                  }))}
+                  selectedPlaceIds={selectedPlaces.map((p) => p.placeId)}
+                  onPlaceClick={(placeId) => {
+                    const place = places.find((p) => p.contentid === placeId);
+                    if (place) {
+                      togglePlaceSelection(place);
+                    }
+                  }}
+                />
+                <div className="mt-4 text-sm text-text-secondary text-center">
+                  💡 지도의 마커를 클릭하면 코스에 추가/제거할 수 있습니다
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* Toast */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+    </div>
+  );
+};
+
+export default Recommend;

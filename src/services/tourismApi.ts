@@ -1,0 +1,225 @@
+import axios from "axios";
+import type { TourismPlace, ApiResponse } from "../types";
+
+const API_KEY = import.meta.env.VITE_TOURISM_API_KEY || "YOUR_API_KEY";
+// 개발 환경에서는 프록시 사용, 프로덕션에서는 직접 URL 사용
+const BASE_URL = import.meta.env.DEV
+  ? "/api/B551011/KorService2" // 개발: Vite 프록시 사용 (KorService2)
+  : "https://apis.data.go.kr/B551011/KorService2"; // 프로덕션: 직접 호출
+
+// 기본 파라미터
+const defaultParams = {
+  serviceKey: API_KEY,
+  MobileOS: "ETC",
+  MobileApp: "ThemaTourCurator",
+  _type: "json",
+};
+
+// 지역기반 관광정보 조회
+export const getAreaBasedList = async (params: {
+  areaCode?: string;
+  sigunguCode?: string;
+  contentTypeId?: string;
+  numOfRows?: number;
+  pageNo?: number;
+}) => {
+  try {
+    const response = await axios.get<ApiResponse<TourismPlace>>(
+      `${BASE_URL}/areaBasedList2`, // v2 엔드포인트
+      {
+        params: {
+          ...defaultParams,
+          numOfRows: 20,
+          pageNo: 1,
+          arrange: "Q", // 수정일순
+          ...params,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("지역기반 관광정보 조회 실패:", error);
+    throw error;
+  }
+};
+
+// 키워드 검색
+export const searchKeyword = async (
+  keyword: string,
+  contentTypeId?: string
+) => {
+  try {
+    const response = await axios.get<ApiResponse<TourismPlace>>(
+      `${BASE_URL}/searchKeyword2`, // v2 엔드포인트
+      {
+        params: {
+          ...defaultParams,
+          keyword,
+          contentTypeId,
+          numOfRows: 20,
+          pageNo: 1,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("키워드 검색 실패:", error);
+    throw error;
+  }
+};
+
+// 위치기반 관광정보 조회
+export const getLocationBasedList = async (
+  mapX: number,
+  mapY: number,
+  radius: number = 5000,
+  contentTypeId?: string
+) => {
+  try {
+    const response = await axios.get<ApiResponse<TourismPlace>>(
+      `${BASE_URL}/locationBasedList2`, // v2 엔드포인트
+      {
+        params: {
+          ...defaultParams,
+          mapX,
+          mapY,
+          radius,
+          contentTypeId,
+          numOfRows: 20,
+          pageNo: 1,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("위치기반 관광정보 조회 실패:", error);
+    throw error;
+  }
+};
+
+// 공통정보 조회
+export const getDetailCommon = async (contentId: string) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/detailCommon2`, // v2 엔드포인트
+      {
+        params: {
+          ...defaultParams,
+          contentId,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("공통정보 조회 실패:", error);
+    throw error;
+  }
+};
+
+// 소개정보 조회
+export const getDetailIntro = async (
+  contentId: string,
+  contentTypeId: string
+) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/detailIntro2`, // v2 엔드포인트
+      {
+        params: {
+          ...defaultParams,
+          contentId,
+          contentTypeId,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("소개정보 조회 실패:", error);
+    throw error;
+  }
+};
+
+// 이미지정보 조회
+export const getDetailImage = async (contentId: string) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/detailImage2`, // v2 엔드포인트
+      {
+        params: {
+          ...defaultParams,
+          contentId,
+          imageYN: "Y",
+          subImageYN: "Y",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("이미지정보 조회 실패:", error);
+    throw error;
+  }
+};
+
+// 반려동물 동반 여행정보 조회
+export const getDetailPetTour = async (contentId: string) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/detailPetTour2`, // v2 엔드포인트
+      {
+        params: {
+          ...defaultParams,
+          contentId,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("반려동물 동반 여행정보 조회 실패:", error);
+    throw error;
+  }
+};
+
+// 행사정보 조회
+export const searchFestival = async (
+  areaCode?: string,
+  eventStartDate?: string
+) => {
+  try {
+    const response = await axios.get<ApiResponse<TourismPlace>>(
+      `${BASE_URL}/searchFestival2`, // v2 엔드포인트
+      {
+        params: {
+          ...defaultParams,
+          areaCode,
+          eventStartDate,
+          numOfRows: 20,
+          pageNo: 1,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("행사정보 조회 실패:", error);
+    throw error;
+  }
+};
+
+// 지역코드 조회
+export const getAreaCode = async (areaCode?: string) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/areaCode2`, // v2 엔드포인트
+      {
+        params: {
+          ...defaultParams,
+          areaCode,
+          numOfRows: 100,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("지역코드 조회 실패:", error);
+    throw error;
+  }
+};
