@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { MapPin, Search, SlidersHorizontal, ChevronLeft, ChevronRight, Plus, Check } from "lucide-react";
+import {
+  MapPin,
+  Search,
+  SlidersHorizontal,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { getAreaBasedList } from "../services/tourismApi";
 import { ContentType } from "../types";
 import type { TourismPlace, CoursePlace } from "../types";
@@ -87,7 +93,7 @@ const Places: React.FC = () => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     fetchPlaces(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleSearch = () => {
@@ -109,9 +115,10 @@ const Places: React.FC = () => {
     });
   };
 
-  const togglePlaceSelection = (e: React.MouseEvent, place: TourismPlace) => {
-    e.stopPropagation();
-    const isSelected = selectedPlaces.some((p) => p.placeId === place.contentid);
+  const togglePlaceSelection = (place: TourismPlace) => {
+    const isSelected = selectedPlaces.some(
+      (p) => p.placeId === place.contentid
+    );
 
     if (isSelected) {
       setSelectedPlaces(
@@ -136,7 +143,10 @@ const Places: React.FC = () => {
 
   const handleSaveCourse = () => {
     if (selectedPlaces.length === 0) {
-      setToast({ message: "최소 1개 이상의 장소를 선택해주세요", type: "error" });
+      setToast({
+        message: "최소 1개 이상의 장소를 선택해주세요",
+        type: "error",
+      });
       return;
     }
     navigate("/course/new", { state: { places: selectedPlaces } });
@@ -151,8 +161,11 @@ const Places: React.FC = () => {
       <div className="container mx-auto px-6 sm:px-12 py-8">
         {/* Header */}
         <div className="mb-12">
-          <div className="flex items-center gap-3 mb-6">
-            <MapPin className="w-8 h-10 text-gray-900 sm:w-9" strokeWidth={1.5} />
+          <div className="flex items-center gap-3 mb-3">
+            <MapPin
+              className="w-8 h-10 text-gray-900 sm:w-9"
+              strokeWidth={1.5}
+            />
             <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight">
               {t("nav.places")}
             </h1>
@@ -240,28 +253,94 @@ const Places: React.FC = () => {
         {/* Places Grid */}
         {!error && !loading && places.length > 0 && (
           <>
+            {/* Selected Places Info */}
+            {selectedPlaces.length > 0 && (
+              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 mt-6 mb-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+                  <div>
+                    <span className="text-gray-900 font-semibold text-lg">
+                      {selectedPlaces.length}개의 장소 선택됨
+                    </span>
+                    <p className="text-gray-600 text-sm mt-1">
+                      선택한 장소로 나만의 코스를 만들어보세요
+                    </p>
+                  </div>
+                  <Button
+                    onClick={handleSaveCourse}
+                    className="whitespace-nowrap"
+                  >
+                    코스 생성
+                  </Button>
+                </div>
+
+                {/* Selected Places List */}
+                <div className="border-t border-gray-200 pt-4 mt-4">
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                    선택된 장소
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {selectedPlaces.map((place, index) => (
+                      <div
+                        key={place.placeId}
+                        className="flex items-center gap-3 bg-white rounded-lg p-3 border border-gray-200"
+                      >
+                        <div className="flex items-center justify-center w-6 h-6 bg-gray-900 text-white rounded-full text-xs font-semibold flex-shrink-0">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-semibold text-gray-900 truncate">
+                            {place.title}
+                          </h4>
+                          <p className="text-xs text-gray-600 truncate">
+                            {place.address}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => {
+                            const originalPlace = places.find(
+                              (p) => p.contentid === place.placeId
+                            );
+                            if (originalPlace) {
+                              togglePlaceSelection(originalPlace);
+                            }
+                          }}
+                          className="flex-shrink-0 p-1 text-gray-400 hover:text-red-500 transition-colors"
+                          aria-label="제거"
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="mb-6 flex items-center justify-between">
               <p className="text-gray-600">
-                총 <span className="font-semibold text-gray-900">{places.length}</span>개의 장소
+                총{" "}
+                <span className="font-semibold text-gray-900">
+                  {places.length}
+                </span>
+                개의 장소
               </p>
-              {selectedPlaces.length > 0 && (
-                <Button
-                  onClick={handleSaveCourse}
-                  className="flex items-center gap-2"
-                >
-                  <Check className="w-5 h-5" strokeWidth={2} />
-                  코스 생성 ({selectedPlaces.length})
-                </Button>
-              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
               {places.map((place) => (
-                <div
-                  key={place.contentid}
-                  onClick={() => handlePlaceClick(place)}
-                  className="group cursor-pointer"
-                >
+                <div key={place.contentid} className="group cursor-pointer">
                   {/* Image */}
                   <div className="relative aspect-square rounded-2xl overflow-hidden mb-3">
                     {place.firstimage ? (
@@ -269,37 +348,58 @@ const Places: React.FC = () => {
                         src={place.firstimage}
                         alt={place.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onClick={() => handlePlaceClick(place)}
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-300 text-6xl">
+                      <div
+                        className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-300 text-6xl"
+                        onClick={() => handlePlaceClick(place)}
+                      >
                         📷
                       </div>
                     )}
 
-                    {/* Add to Course Button */}
+                    {/* Select Button Overlay */}
                     <button
-                      onClick={(e) => togglePlaceSelection(e, place)}
-                      className={`absolute top-3 right-3 p-2.5 rounded-full shadow-lg transition-all ${
+                      onClick={() => togglePlaceSelection(place)}
+                      className={`absolute top-4 right-4 p-2.5 rounded-full transition-all ${
                         isPlaceSelected(place.contentid)
                           ? "bg-gray-900 text-white"
-                          : "bg-white text-gray-900 hover:bg-gray-100"
+                          : "bg-white/90 hover:bg-white text-gray-700"
                       }`}
-                      aria-label={
-                        isPlaceSelected(place.contentid)
-                          ? "코스에서 제거"
-                          : "코스에 추가"
-                      }
                     >
                       {isPlaceSelected(place.contentid) ? (
-                        <Check className="w-5 h-5" strokeWidth={2.5} />
+                        <svg
+                          className="w-5 h-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
                       ) : (
-                        <Plus className="w-5 h-5" strokeWidth={2.5} />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 4v16m8-8H4"
+                          />
+                        </svg>
                       )}
                     </button>
                   </div>
 
                   {/* Content */}
-                  <div className="pl-1">
+                  <div className="pl-1" onClick={() => handlePlaceClick(place)}>
                     <h3 className="text-base font-semibold text-gray-900 line-clamp-1 mb-1">
                       {place.title}
                     </h3>
@@ -326,8 +426,14 @@ const Places: React.FC = () => {
                 {(() => {
                   const totalPages = Math.ceil(totalCount / itemsPerPage);
                   const maxVisiblePages = 5;
-                  let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-                  let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+                  let startPage = Math.max(
+                    1,
+                    currentPage - Math.floor(maxVisiblePages / 2)
+                  );
+                  let endPage = Math.min(
+                    totalPages,
+                    startPage + maxVisiblePages - 1
+                  );
 
                   if (endPage - startPage + 1 < maxVisiblePages) {
                     startPage = Math.max(1, endPage - maxVisiblePages + 1);

@@ -16,7 +16,7 @@ import PlaceDetailSkeleton from "../components/PlaceDetailSkeleton";
 import ErrorMessage from "../components/ErrorMessage";
 import KakaoMap from "../components/KakaoMap";
 
-import { Calendar, Car, Clock, Earth, Phone, Pin } from "lucide-react";
+import { Calendar, Car, Clock, Earth, Phone, Pin, Dog } from "lucide-react";
 
 interface PlaceDetail {
   title: string;
@@ -443,7 +443,6 @@ const PlaceDetail: React.FC = () => {
                   {intro?.parking && (
                     <div className="flex items-start gap-3">
                       <Car size={24} />
-                      {/* <span className="text-2xl">🚗</span> */}
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-900 mb-1">
                           주차 정보
@@ -456,12 +455,12 @@ const PlaceDetail: React.FC = () => {
                     </div>
                   )}
 
-                  {intro?.chkpet && (
+                  {!intro?.chkpet && (
                     <div className="flex items-start gap-3">
-                      <span className="text-2xl">🐕</span>
+                      <Dog size={24} />
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-900 mb-1">
-                          반려동물 동반
+                          반려동물 동반 가능
                         </p>
                         <div
                           className="text-sm text-gray-600"
@@ -476,12 +475,12 @@ const PlaceDetail: React.FC = () => {
                       <span className="text-2xl">
                         <Earth size={24} />
                       </span>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 mb-1">
                           {t("place.website")}
                         </p>
                         <div
-                          className="text-sm text-gray-600"
+                          className="text-sm text-gray-600 break-all"
                           dangerouslySetInnerHTML={{ __html: detail.homepage }}
                         />
                       </div>
