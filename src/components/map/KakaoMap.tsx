@@ -23,12 +23,6 @@ const KakaoMap: React.FC<KakaoMapProps> = ({
   const mapRef = useRef<any>(null);
 
   useEffect(() => {
-    console.log("KakaoMap Component - Coordinates:", {
-      latitude,
-      longitude,
-      title,
-      address,
-    });
 
     const loadKakaoMap = () => {
       if (!window.kakao || !window.kakao.maps) {
@@ -42,8 +36,6 @@ const KakaoMap: React.FC<KakaoMapProps> = ({
       }
 
       try {
-        console.log("Initializing Kakao Map...");
-
         const options = {
           center: new window.kakao.maps.LatLng(latitude, longitude),
           level: 3, // 확대 레벨
@@ -51,7 +43,6 @@ const KakaoMap: React.FC<KakaoMapProps> = ({
 
         const map = new window.kakao.maps.Map(mapContainer.current, options);
         mapRef.current = map;
-        console.log("Map created successfully");
 
         const markerPosition = new window.kakao.maps.LatLng(
           latitude,
@@ -61,7 +52,6 @@ const KakaoMap: React.FC<KakaoMapProps> = ({
           position: markerPosition,
         });
         marker.setMap(map);
-        console.log("Marker created successfully");
 
         const infowindowContent = `
           <div style="padding: 10px; min-width: 150px; text-align: center;">
@@ -87,20 +77,16 @@ const KakaoMap: React.FC<KakaoMapProps> = ({
         });
 
         infowindow.open(map, marker);
-        console.log("InfoWindow created and opened successfully");
       } catch (error) {
         console.error("Error initializing Kakao Map:", error);
       }
     };
 
     if (window.kakao && window.kakao.maps) {
-      console.log("Kakao SDK is available, loading map...");
       window.kakao.maps.load(loadKakaoMap);
     } else {
-      console.log("Waiting for Kakao SDK to load...");
       const checkKakao = setInterval(() => {
         if (window.kakao && window.kakao.maps) {
-          console.log("Kakao SDK loaded, initializing map...");
           clearInterval(checkKakao);
           window.kakao.maps.load(loadKakaoMap);
         }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
 import {
   MapPin,
   Search,
@@ -21,18 +22,14 @@ const Places: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [places, setPlaces] = useState<TourismPlace[]>([]);
   const [selectedPlaces, setSelectedPlaces] = useState<CoursePlace[]>(() => {
     const saved = sessionStorage.getItem("selectedPlaces");
     return saved ? JSON.parse(saved) : [];
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [selectedContentType, setSelectedContentType] = useState<string>("all");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [debouncedKeyword, setDebouncedKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
   const itemsPerPage = 20;
   const [toast, setToast] = useState<{
     message: string;
@@ -43,7 +40,6 @@ const Places: React.FC = () => {
     sessionStorage.setItem("selectedPlaces", JSON.stringify(selectedPlaces));
   }, [selectedPlaces]);
 
-  // Debounce: 1초 대기 후 검색어 업데이트
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedKeyword(searchKeyword);
@@ -63,11 +59,10 @@ const Places: React.FC = () => {
     { id: ContentType.RESTAURANT, label: t("place.restaurant") },
   ];
 
-  const fetchPlaces = async (page: number = currentPage, keyword: string = "") => {
-    setLoading(true);
-    setError(null);
-
-    try {
+  // React Query로 데이터 페칭
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["places", selectedContentType, currentPage, debouncedKeyword],
+    queryFn: async () => {
       const contentTypesToFetch =
         selectedContentType === "all"
           ? [
@@ -84,7 +79,7 @@ const Places: React.FC = () => {
         const response = await getAreaBasedList({
           contentTypeId: contentType,
           numOfRows: itemsPerPage,
-          pageNo: page,
+          pageNo: currentPage,
         });
 
         if (response.response.body.items.item) {
@@ -93,41 +88,27 @@ const Places: React.FC = () => {
         total += response.response.body.totalCount || 0;
       }
 
-      // 검색어가 있으면 클라이언트 측 필터링
-      const filteredPlaces = keyword.trim()
+      const filteredPlaces = debouncedKeyword.trim()
         ? allPlaces.filter(
             (place) =>
-              place.title.toLowerCase().includes(keyword.toLowerCase()) ||
-              place.addr1.toLowerCase().includes(keyword.toLowerCase())
+              place.title.toLowerCase().includes(debouncedKeyword.toLowerCase()) ||
+              place.addr1.toLowerCase().includes(debouncedKeyword.toLowerCase())
           )
         : allPlaces;
 
-      setPlaces(filteredPlaces);
-      setTotalCount(total);
-    } catch (err) {
-      console.error("Failed to fetch places:", err);
-      setError(t("error.apiError"));
-    } finally {
-      setLoading(false);
-    }
-  };
+      return { places: filteredPlaces, totalCount: total };
+    },
+  });
+
+  const places = data?.places || [];
+  const totalCount = data?.totalCount || 0;
 
   useEffect(() => {
     setCurrentPage(1);
-    fetchPlaces(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedContentType]);
-
-  // debounced 검색어 변경 시 자동 검색
-  useEffect(() => {
-    setCurrentPage(1);
-    fetchPlaces(1, debouncedKeyword);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedKeyword]);
+  }, [selectedContentType, debouncedKeyword]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    fetchPlaces(page, debouncedKeyword);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -245,9 +226,14 @@ const Places: React.FC = () => {
           </div>
         </div>
 
-        {error && <ErrorMessage message={error} onRetry={fetchPlaces} />}
+        {error && (
+          <ErrorMessage
+            message={error.message || t("error.apiError")}
+            onRetry={() => refetch()}
+          />
+        )}
 
-        {!error && places.length === 0 && !loading && (
+        {!error && places.length === 0 && !isLoading && (
           <div className="text-center py-20">
             <MapPin
               className="w-24 h-24 text-gray-300 mx-auto mb-6"
@@ -262,13 +248,13 @@ const Places: React.FC = () => {
           </div>
         )}
 
-        {loading && (
+        {isLoading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
             <PlaceSkeleton count={20} />
           </div>
         )}
 
-        {!error && !loading && places.length > 0 && (
+        {!error && !isLoading && places.length > 0 && (
           <>
             {selectedPlaces.length > 0 && (
               <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 mt-6 mb-6">

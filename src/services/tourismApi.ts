@@ -1,6 +1,5 @@
 import axios from "axios";
 import type { TourismPlace, ApiResponse } from "../types";
-import { apiCache, generateCacheKey } from "../utils/cache";
 
 const API_KEY = import.meta.env.VITE_TOURISM_API_KEY || "YOUR_API_KEY";
 // 개발 환경에서는 프록시 사용, 프로덕션에서는 직접 URL 사용
@@ -30,22 +29,11 @@ export const getAreaBasedList = async (params: {
     ...params,
   };
 
-  const cacheKey = generateCacheKey("areaBasedList2", requestParams);
-  const cached = apiCache.get<ApiResponse<TourismPlace>>(cacheKey);
-
-  if (cached) {
-    console.log("캐시에서 데이터 반환:", cacheKey);
-    return cached;
-  }
-
   try {
     const response = await axios.get<ApiResponse<TourismPlace>>(
       `${BASE_URL}/areaBasedList2`,
       { params: requestParams }
     );
-
-    apiCache.set(cacheKey, response.data);
-    console.log("API 호출 및 캐시 저장:", cacheKey);
     return response.data;
   } catch (error) {
     console.error("지역기반 관광정보 조회 실패:", error);
@@ -65,21 +53,11 @@ export const searchKeyword = async (
     pageNo: 1,
   };
 
-  const cacheKey = generateCacheKey("searchKeyword2", requestParams);
-  const cached = apiCache.get<ApiResponse<TourismPlace>>(cacheKey);
-
-  if (cached) {
-    return cached;
-  }
-
   try {
     const response = await axios.get<ApiResponse<TourismPlace>>(
       `${BASE_URL}/searchKeyword2`,
       { params: requestParams }
     );
-
-    apiCache.set(cacheKey, response.data);
-    console.log("API 호출 및 캐시 저장:", cacheKey);
     return response.data;
   } catch (error) {
     console.error("키워드 검색 실패:", error);
@@ -122,22 +100,11 @@ export const getDetailCommon = async (contentId: string) => {
     contentId,
   };
 
-  const cacheKey = generateCacheKey("detailCommon2", requestParams);
-  const cached = apiCache.get(cacheKey);
-
-  if (cached) {
-    console.log("캐시에서 데이터 반환:", cacheKey);
-    return cached;
-  }
-
   try {
     const response = await axios.get(
       `${BASE_URL}/detailCommon2`,
       { params: requestParams }
     );
-
-    apiCache.set(cacheKey, response.data);
-    console.log("API 호출 및 캐시 저장:", cacheKey);
     return response.data;
   } catch (error) {
     console.error("공통정보 조회 실패:", error);
@@ -155,22 +122,11 @@ export const getDetailIntro = async (
     contentTypeId,
   };
 
-  const cacheKey = generateCacheKey("detailIntro2", requestParams);
-  const cached = apiCache.get(cacheKey);
-
-  if (cached) {
-    console.log("캐시에서 데이터 반환:", cacheKey);
-    return cached;
-  }
-
   try {
     const response = await axios.get(
       `${BASE_URL}/detailIntro2`,
       { params: requestParams }
     );
-
-    apiCache.set(cacheKey, response.data);
-    console.log("API 호출 및 캐시 저장:", cacheKey);
     return response.data;
   } catch (error) {
     console.error("소개정보 조회 실패:", error);
@@ -186,22 +142,11 @@ export const getDetailImage = async (contentId: string) => {
     subImageYN: "Y",
   };
 
-  const cacheKey = generateCacheKey("detailImage2", requestParams);
-  const cached = apiCache.get(cacheKey);
-
-  if (cached) {
-    console.log("캐시에서 데이터 반환:", cacheKey);
-    return cached;
-  }
-
   try {
     const response = await axios.get(
       `${BASE_URL}/detailImage2`,
       { params: requestParams }
     );
-
-    apiCache.set(cacheKey, response.data);
-    console.log("API 호출 및 캐시 저장:", cacheKey);
     return response.data;
   } catch (error) {
     console.error("이미지정보 조회 실패:", error);
@@ -270,16 +215,4 @@ export const getAreaCode = async (areaCode?: string) => {
   }
 };
 
-export const clearApiCache = () => {
-  apiCache.clear();
-  console.log("API 캐시가 모두 삭제되었습니다");
-};
-
-export const clearExpiredCache = () => {
-  apiCache.clearExpired();
-  console.log("만료된 API 캐시가 삭제되었습니다");
-};
-
-export const getCacheSize = () => {
-  return apiCache.size();
-};
+// React Query가 캐싱을 자동으로 처리하므로 더 이상 필요 없음

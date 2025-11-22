@@ -45,12 +45,6 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
       }
 
       try {
-        console.log(
-          "Initializing Multi-Place Kakao Map with",
-          places.length,
-          "places"
-        );
-
         // 지도 중심 계산 (모든 장소의 평균 위치)
         let centerLat = 0;
         let centerLng = 0;
@@ -75,7 +69,6 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
 
         const map = new window.kakao.maps.Map(mapContainer.current, options);
         mapRef.current = map;
-        console.log("Map created successfully");
 
         markersRef.current.forEach((marker) => marker.setMap(null));
         markersRef.current = [];
@@ -166,20 +159,16 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
           map.setBounds(bounds);
         }
 
-        console.log("All markers created successfully");
       } catch (error) {
         console.error("Error initializing Multi-Place Kakao Map:", error);
       }
     };
 
     if (window.kakao && window.kakao.maps) {
-      console.log("Kakao SDK is available, loading map...");
       window.kakao.maps.load(loadKakaoMap);
     } else {
-      console.log("Waiting for Kakao SDK to load...");
       const checkKakao = setInterval(() => {
         if (window.kakao && window.kakao.maps) {
-          console.log("Kakao SDK loaded, initializing map...");
           clearInterval(checkKakao);
           window.kakao.maps.load(loadKakaoMap);
         }
