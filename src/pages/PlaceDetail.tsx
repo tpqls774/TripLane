@@ -99,7 +99,7 @@ const PlaceDetail: React.FC = () => {
           setIntro(introResponse.response.body.items.item[0]);
         }
       } catch (err) {
-        console.log("Intro data not available");
+        console.error("Intro data not available");
       }
 
       try {
@@ -111,7 +111,7 @@ const PlaceDetail: React.FC = () => {
           setImages(imageUrls);
         }
       } catch (err) {
-        console.log("Image data not available");
+        console.error("Image data not available");
       }
     } catch (err) {
       console.error("Failed to fetch place details:", err);

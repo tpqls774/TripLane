@@ -1,6 +1,19 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./contexts/AuthContext";
 import Navbar from "./components/layout/Navbar";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 60,
+      gcTime: 1000 * 60 * 60 * 24,
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
+
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 import Home from "./pages/Home";
 import Places from "./pages/Places";
@@ -16,11 +29,12 @@ import Profile from "./pages/Profile";
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <div className="min-h-screen bg-gray-50">
-          <Navbar />
-          <Routes>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthProvider>
+          <div className="min-h-screen bg-gray-50">
+            <Navbar />
+            <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/places" element={<Places />} />
             <Route path="/recommend" element={<Recommend />} />
@@ -79,6 +93,7 @@ const App = () => {
         </div>
       </AuthProvider>
     </BrowserRouter>
+    </QueryClientProvider>
   );
 };
 

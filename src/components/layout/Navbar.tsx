@@ -1,9 +1,28 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Home, Sparkles, BookOpen, Heart, Map, Globe, User, Menu } from "lucide-react";
+import {
+  Home,
+  Sparkles,
+  BookOpen,
+  Heart,
+  Map,
+  Globe,
+  User,
+  Menu,
+  Compass,
+  ChevronDown,
+  Flower2,
+  Dog,
+  Film,
+  UtensilsCrossed,
+  Palette,
+  Trees
+} from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { logout } from "../../services/authService";
+import { ThemeType } from "../../types";
+import type { ThemeTypeValue } from "../../types";
 
 const Navbar: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -11,7 +30,9 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isThemeDropdownOpen, setIsThemeDropdownOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const themeDropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleLanguage = () => {
     const newLang = i18n.language === "ko" ? "en" : "ko";
@@ -22,6 +43,9 @@ const Navbar: React.FC = () => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsMenuOpen(false);
+      }
+      if (themeDropdownRef.current && !themeDropdownRef.current.contains(event.target as Node)) {
+        setIsThemeDropdownOpen(false);
       }
     };
 
@@ -45,6 +69,20 @@ const Navbar: React.FC = () => {
     }
     return location.pathname.startsWith(path);
   };
+
+  const handleThemeSelect = (theme: ThemeTypeValue) => {
+    setIsThemeDropdownOpen(false);
+    navigate(`/recommend?theme=${theme}`);
+  };
+
+  const themes = [
+    { id: ThemeType.WELLNESS, Icon: Flower2 },
+    { id: ThemeType.PET_FRIENDLY, Icon: Dog },
+    { id: ThemeType.HALLYU, Icon: Film },
+    { id: ThemeType.GOURMET, Icon: UtensilsCrossed },
+    { id: ThemeType.CULTURE, Icon: Palette },
+    { id: ThemeType.NATURE, Icon: Trees },
+  ];
 
   return (
     <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
@@ -80,6 +118,39 @@ const Navbar: React.FC = () => {
               <Sparkles className="w-4 h-4 lg:hidden" strokeWidth={2} />
               <span className="hidden lg:inline">{t("nav.places")}</span>
             </Link>
+            <div className="relative" ref={themeDropdownRef}>
+              <button
+                onClick={() => setIsThemeDropdownOpen(!isThemeDropdownOpen)}
+                className={`px-4 py-2 rounded-xl font-medium text-sm transition-colors flex items-center gap-2 ${
+                  isActive("/recommend")
+                    ? "text-gray-900"
+                    : "text-gray-500 hover:text-gray-900"
+                }`}
+              >
+                <Compass className="w-4 h-4 lg:hidden" strokeWidth={2} />
+                <span className="hidden lg:inline">{t("nav.recommend")}</span>
+                <ChevronDown className="w-3 h-3 hidden lg:inline" strokeWidth={2} />
+              </button>
+              {isThemeDropdownOpen && (
+                <div className="absolute left-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden z-50">
+                  {themes.map((theme) => {
+                    const IconComponent = theme.Icon;
+                    return (
+                      <button
+                        key={theme.id}
+                        onClick={() => handleThemeSelect(theme.id)}
+                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left"
+                      >
+                        <IconComponent className="w-5 h-5 text-gray-600" strokeWidth={2} />
+                        <span className="text-sm text-gray-700 font-medium">
+                          {t(`theme.${theme.id}`)}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
             <Link
               to="/my-courses"
               className={`px-4 py-2 rounded-xl font-medium text-sm transition-colors flex items-center gap-2 ${
@@ -100,7 +171,7 @@ const Navbar: React.FC = () => {
               }`}
             >
               <Heart
-                className="w-4 h-4"
+                className="w-4 h-4 lg:hidden"
                 strokeWidth={2}
                 fill={isActive("/favorites") ? "currentColor" : "none"}
               />

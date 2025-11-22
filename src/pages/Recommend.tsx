@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Compass, Image } from "lucide-react";
 import { getAreaBasedList } from "../services/tourismApi";
 import { ContentType, ThemeType } from "../types";
 import type { TourismPlace, CoursePlace, ThemeTypeValue } from "../types";
 import ErrorMessage from "../components/common/ErrorMessage";
-import MultiPlaceMap from "../components/map/MultiPlaceMap";
 import Button from "../components/common/Button";
 import PlaceSkeleton from "../components/skeleton/PlaceSkeleton";
 import Toast from "../components/common/Toast";
@@ -17,16 +17,11 @@ const Recommend: React.FC = () => {
   const navigate = useNavigate();
   const theme = searchParams.get("theme") as ThemeTypeValue;
 
-  const [places, setPlaces] = useState<TourismPlace[]>([]);
   const [selectedPlaces, setSelectedPlaces] = useState<CoursePlace[]>(() => {
     const saved = sessionStorage.getItem("selectedPlacesRecommend");
     return saved ? JSON.parse(saved) : [];
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<"list" | "map">("list");
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
   const itemsPerPage = 20;
   const [toast, setToast] = useState<{
     message: string;
@@ -40,20 +35,10 @@ const Recommend: React.FC = () => {
     );
   }, [selectedPlaces]);
 
-  useEffect(() => {
-    if (!theme) {
-      navigate("/");
-      return;
-    }
-    setCurrentPage(1);
-    fetchPlaces(1);
-  }, [theme]);
-
-  const fetchPlaces = async (page: number = currentPage) => {
-    setLoading(true);
-    setError(null);
-
-    try {
+  // React Query로 데이터 페칭
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["recommend", theme, currentPage],
+    queryFn: async () => {
       const contentTypes = getContentTypesByTheme(theme);
       const allPlaces: TourismPlace[] = [];
       let total = 0;
@@ -62,7 +47,7 @@ const Recommend: React.FC = () => {
         const response = await getAreaBasedList({
           contentTypeId: contentType,
           numOfRows: itemsPerPage,
-          pageNo: page,
+          pageNo: currentPage,
         });
 
         if (response.response.body.items.item) {
@@ -71,15 +56,21 @@ const Recommend: React.FC = () => {
         total += response.response.body.totalCount || 0;
       }
 
-      setPlaces(allPlaces);
-      setTotalCount(total);
-    } catch (err) {
-      console.error("Failed to fetch places:", err);
-      setError(t("error.apiError"));
-    } finally {
-      setLoading(false);
+      return { places: allPlaces, totalCount: total };
+    },
+    enabled: !!theme,
+  });
+
+  const places = data?.places || [];
+  const totalCount = data?.totalCount || 0;
+
+  useEffect(() => {
+    if (!theme) {
+      navigate("/");
+      return;
     }
-  };
+    setCurrentPage(1);
+  }, [theme, navigate]);
 
   const getContentTypesByTheme = (theme: ThemeTypeValue): string[] => {
     switch (theme) {
@@ -153,7 +144,6 @@ const Recommend: React.FC = () => {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    fetchPlaces(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -165,44 +155,19 @@ const Recommend: React.FC = () => {
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-6 sm:px-12 py-8">
         <div className="mb-12">
-          <div className="flex items-center justify-between gap-6 mb-6">
-            <div>
-              <div className="flex items-center gap-3 mb-3">
-                <Compass
-                  className="w-8 h-10 text-gray-900 sm:w-9"
-                  strokeWidth={1.5}
-                />
-                <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight">
-                  {t("recommend.title")}
-                </h1>
-              </div>
-              <p className="text-gray-600 text-lg">
-                {t("recommend.selectedTheme")}: {t(`theme.${theme}`)}
-              </p>
+          <div className="mb-6">
+            <div className="flex items-center gap-3 mb-3">
+              <Compass
+                className="w-8 h-10 text-gray-900 sm:w-9"
+                strokeWidth={1.5}
+              />
+              <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight">
+                {t("recommend.title")}
+              </h1>
             </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={() => setViewMode("list")}
-                className={`px-5 py-2.5 rounded-xl font-medium transition-all ${
-                  viewMode === "list"
-                    ? "bg-gray-900 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                {t("recommend.viewList")}
-              </button>
-              <button
-                onClick={() => setViewMode("map")}
-                className={`px-5 py-2.5 rounded-xl font-medium transition-all ${
-                  viewMode === "map"
-                    ? "bg-gray-900 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                {t("recommend.viewMap")}
-              </button>
-            </div>
+            <p className="text-gray-600 text-lg">
+              {t("recommend.selectedTheme")}: {t(`theme.${theme}`)}
+            </p>
           </div>
 
           {selectedPlaces.length > 0 && (
@@ -281,16 +246,19 @@ const Recommend: React.FC = () => {
         </div>
 
         {error && (
-          <ErrorMessage message={error} onRetry={() => fetchPlaces()} />
+          <ErrorMessage
+            message={error.message || t("error.apiError")}
+            onRetry={() => refetch()}
+          />
         )}
 
-        {loading && (
+        {isLoading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
             <PlaceSkeleton count={20} />
           </div>
         )}
 
-        {!error && places.length === 0 && !loading && (
+        {!error && places.length === 0 && !isLoading && (
           <div className="text-center py-12">
             <p className="text-text-secondary text-lg">
               {t("recommend.noPlaces")}
@@ -298,21 +266,19 @@ const Recommend: React.FC = () => {
           </div>
         )}
 
-        {!error && !loading && places.length > 0 && (
+        {!error && !isLoading && places.length > 0 && (
           <>
-            {viewMode === "list" && (
-              <>
-                <div className="mb-6 flex items-center justify-between">
-                  <p className="text-gray-600">
-                    {t("common.totalPlaces")}{" "}
-                    <span className="font-semibold text-gray-900">
-                      {places.length}
-                    </span>
-                    {t("common.placeCount")}
-                  </p>
-                </div>
+            <div className="mb-6 flex items-center justify-between">
+              <p className="text-gray-600">
+                {t("common.totalPlaces")}{" "}
+                <span className="font-semibold text-gray-900">
+                  {places.length}
+                </span>
+                {t("common.placeCount")}
+              </p>
+            </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
                   {places.map((place) => (
                     <div key={place.contentid} className="group cursor-pointer">
                       <div className="relative aspect-square rounded-2xl overflow-hidden mb-3">
@@ -459,32 +425,6 @@ const Recommend: React.FC = () => {
                     </button>
                   </div>
                 )}
-              </>
-            )}
-
-            {viewMode === "map" && (
-              <div className="bg-white rounded-xl p-4">
-                <MultiPlaceMap
-                  places={places.map((place) => ({
-                    placeId: place.contentid,
-                    title: place.title,
-                    lat: parseFloat(place.mapy),
-                    lng: parseFloat(place.mapx),
-                    address: place.addr1,
-                  }))}
-                  selectedPlaceIds={selectedPlaces.map((p) => p.placeId)}
-                  onPlaceClick={(placeId) => {
-                    const place = places.find((p) => p.contentid === placeId);
-                    if (place) {
-                      togglePlaceSelection(place);
-                    }
-                  }}
-                />
-                <div className="mt-4 text-sm text-gray-600 text-center">
-                  {t("recommend.mapClickInfo")}
-                </div>
-              </div>
-            )}
           </>
         )}
       </div>
