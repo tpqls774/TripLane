@@ -20,7 +20,6 @@ const Signup: React.FC = () => {
     e.preventDefault();
     setError(null);
 
-    // 비밀번호 확인
     if (password !== confirmPassword) {
       setError(t("auth.passwordMismatch"));
       return;
@@ -46,7 +45,6 @@ const Signup: React.FC = () => {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-6 py-12">
       <div className="max-w-md w-full">
-        {/* Header */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-block mb-6">
             <Map
@@ -60,7 +58,6 @@ const Signup: React.FC = () => {
           <p className="text-gray-600">{t("auth.signupDesc")}</p>
         </div>
 
-        {/* Form Card */}
         <div className="border border-gray-200 rounded-2xl p-8">
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
@@ -141,18 +138,12 @@ const Signup: React.FC = () => {
               />
             </div>
 
-            <Button
-              type="submit"
-              disabled={loading}
-              fullWidth
-              className="mt-6"
-            >
+            <Button type="submit" disabled={loading} fullWidth className="mt-6">
               {loading ? t("common.loading") : t("auth.signup")}
             </Button>
           </form>
         </div>
 
-        {/* Footer */}
         <div className="mt-6 text-center text-sm text-gray-600">
           {t("auth.hasAccount")}{" "}
           <Link

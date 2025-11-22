@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { AlertTriangle } from "lucide-react";
 
 interface ErrorMessageProps {
   message?: string;
@@ -10,8 +11,10 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({ message, onRetry }) => {
   const { t } = useTranslation();
 
   return (
-    <div className="bg-error-light border border-error rounded-lg p-6 text-center">
-      <div className="text-error text-4xl mb-4">⚠️</div>
+    <div className="bg-error-light border-error rounded-lg p-6 text-center">
+      <div className="text-error mb-4 flex justify-center">
+        <AlertTriangle color="red" className="w-12 h-12" strokeWidth={2} />
+      </div>
       <h3 className="text-lg font-semibold text-error mb-2">
         {t("common.error")}
       </h3>

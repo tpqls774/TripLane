@@ -10,7 +10,6 @@ export const ContentType = {
   RESTAURANT: "39", // 음식점
 } as const;
 
-// 테마 타입
 export const ThemeType = {
   WELLNESS: "wellness",
   PET_FRIENDLY: "petFriendly",
@@ -22,7 +21,6 @@ export const ThemeType = {
 
 export type ThemeTypeValue = (typeof ThemeType)[keyof typeof ThemeType];
 
-// API 응답 - 관광지 아이템
 export interface TourismPlace {
   contentid: string;
   contenttypeid: string;
@@ -48,7 +46,6 @@ export interface TourismPlace {
   modifiedtime?: string;
 }
 
-// API 공통 응답 구조
 export interface ApiResponse<T> {
   response: {
     header: {

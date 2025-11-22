@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { Map } from 'lucide-react';
-import { signIn } from '../services/authService';
-import Button from '../components/common/Button';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { Map } from "lucide-react";
+import { signIn } from "../services/authService";
+import Button from "../components/common/Button";
 
 const Login: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -21,7 +21,7 @@ const Login: React.FC = () => {
 
     try {
       await signIn(email, password);
-      navigate('/');
+      navigate("/");
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -32,20 +32,19 @@ const Login: React.FC = () => {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-6 py-12">
       <div className="max-w-md w-full">
-        {/* Header */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-block mb-6">
-            <Map className="w-16 h-16 text-gray-900 mx-auto" strokeWidth={1.5} />
+            <Map
+              className="w-16 h-16 text-gray-900 mx-auto"
+              strokeWidth={1.5}
+            />
           </Link>
           <h1 className="text-3xl font-semibold text-gray-900 mb-2 tracking-tight">
-            {t('auth.login')}
+            {t("auth.login")}
           </h1>
-          <p className="text-gray-600">
-            {t('auth.loginDesc')}
-          </p>
+          <p className="text-gray-600">{t("auth.loginDesc")}</p>
         </div>
 
-        {/* Form Card */}
         <div className="border border-gray-200 rounded-2xl p-8">
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
@@ -55,8 +54,11 @@ const Login: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-900 mb-2">
-                {t('auth.email')}
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-900 mb-2"
+              >
+                {t("auth.email")}
               </label>
               <input
                 id="email"
@@ -70,8 +72,11 @@ const Login: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-900 mb-2">
-                {t('auth.password')}
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-900 mb-2"
+              >
+                {t("auth.password")}
               </label>
               <input
                 id="password"
@@ -84,22 +89,19 @@ const Login: React.FC = () => {
               />
             </div>
 
-            <Button
-              type="submit"
-              disabled={loading}
-              fullWidth
-              className="mt-6"
-            >
-              {loading ? t('common.loading') : t('auth.login')}
+            <Button type="submit" disabled={loading} fullWidth className="mt-6">
+              {loading ? t("common.loading") : t("auth.login")}
             </Button>
           </form>
         </div>
 
-        {/* Footer */}
         <div className="mt-6 text-center text-sm text-gray-600">
-          {t('auth.noAccount')}{' '}
-          <Link to="/signup" className="text-gray-900 hover:text-gray-600 font-medium underline">
-            {t('auth.signup')}
+          {t("auth.noAccount")}{" "}
+          <Link
+            to="/signup"
+            className="text-gray-900 hover:text-gray-600 font-medium underline"
+          >
+            {t("auth.signup")}
           </Link>
         </div>
       </div>

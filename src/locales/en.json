@@ -34,6 +34,7 @@
     "recommend": "Recommendations",
     "myCourses": "My Courses",
     "favorites": "Favorites",
+    "profile": "Profile",
     "language": "Language",
     "myFavorites": "My Favorites",
     "noFavorites": "No favorite places",
@@ -177,5 +178,25 @@
     "passwordMismatch": "Passwords do not match",
     "passwordTooShort": "Password must be at least 6 characters",
     "loginRequired": "Login required"
+  },
+  "profile": {
+    "title": "Profile Settings",
+    "subtitle": "Manage your account information",
+    "accountInfo": "Account Information",
+    "profileInfo": "Profile Information",
+    "securityInfo": "Security Settings",
+    "memberSince": "Member Since",
+    "updateProfile": "Update Profile",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "updateSuccess": "Profile updated successfully",
+    "updateError": "Failed to update profile",
+    "passwordUpdateSuccess": "Password changed successfully",
+    "passwordUpdateError": "Failed to change password",
+    "enterCurrentPassword": "Please enter your current password",
+    "enterNewPassword": "Please enter a new password",
+    "enterDisplayName": "Please enter your name"
   }
 }

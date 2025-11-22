@@ -4,10 +4,13 @@ import {
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
+  updatePassword,
+  updateEmail,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
 } from "firebase/auth";
 import { auth } from "./firebase";
 
-// 회원가입
 export const signUp = async (
   email: string,
   password: string,
@@ -20,7 +23,6 @@ export const signUp = async (
       password
     );
 
-    // 사용자 프로필 업데이트
     if (userCredential.user) {
       await updateProfile(userCredential.user, {
         displayName,
@@ -34,7 +36,6 @@ export const signUp = async (
   }
 };
 
-// 로그인
 export const signIn = async (
   email: string,
   password: string
@@ -52,7 +53,6 @@ export const signIn = async (
   }
 };
 
-// 로그아웃
 export const logout = async (): Promise<void> => {
   try {
     await signOut(auth);
@@ -62,7 +62,60 @@ export const logout = async (): Promise<void> => {
   }
 };
 
-// Firebase Auth 에러 메시지 변환
+export const updateUserProfile = async (
+  user: User,
+  displayName?: string,
+  photoURL?: string
+): Promise<void> => {
+  try {
+    await updateProfile(user, {
+      displayName: displayName || user.displayName,
+      photoURL: photoURL || user.photoURL,
+    });
+  } catch (error: any) {
+    console.error("프로필 업데이트 실패:", error);
+    throw new Error(getAuthErrorMessage(error.code));
+  }
+};
+
+export const changePassword = async (
+  user: User,
+  currentPassword: string,
+  newPassword: string
+): Promise<void> => {
+  try {
+    const credential = EmailAuthProvider.credential(
+      user.email!,
+      currentPassword
+    );
+    await reauthenticateWithCredential(user, credential);
+
+    await updatePassword(user, newPassword);
+  } catch (error: any) {
+    console.error("비밀번호 변경 실패:", error);
+    throw new Error(getAuthErrorMessage(error.code));
+  }
+};
+
+export const changeEmail = async (
+  user: User,
+  newEmail: string,
+  currentPassword: string
+): Promise<void> => {
+  try {
+    const credential = EmailAuthProvider.credential(
+      user.email!,
+      currentPassword
+    );
+    await reauthenticateWithCredential(user, credential);
+
+    await updateEmail(user, newEmail);
+  } catch (error: any) {
+    console.error("이메일 변경 실패:", error);
+    throw new Error(getAuthErrorMessage(error.code));
+  }
+};
+
 const getAuthErrorMessage = (errorCode: string): string => {
   switch (errorCode) {
     case "auth/email-already-in-use":
@@ -81,6 +134,8 @@ const getAuthErrorMessage = (errorCode: string): string => {
       return "잘못된 비밀번호입니다.";
     case "auth/invalid-credential":
       return "이메일 또는 비밀번호가 올바르지 않습니다.";
+    case "auth/requires-recent-login":
+      return "보안을 위해 다시 로그인해주세요.";
     default:
       return "인증 오류가 발생했습니다.";
   }

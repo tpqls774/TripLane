@@ -88,7 +88,7 @@ const Toast: React.FC<ToastProps> = ({
         aria-live="polite"
         className={`pointer-events-auto relative min-w-[320px] max-w-[420px] rounded-[10px] border border-gray-200 bg-white p-4 text-gray-900 ${styles.accent} animate-toast-slide-in`}
       >
-        <div className="flex gap-3 items-start">
+        <div className="flex gap-3 items-center">
           <div
             className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${styles.badge}`}
           >

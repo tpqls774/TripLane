@@ -9,6 +9,7 @@ import {
   Edit,
   Share2,
   Navigation,
+  Image as ImageIcon,
 } from "lucide-react";
 import { getCourse } from "../services/courseService";
 import type { SavedCourse } from "../types";
@@ -87,7 +88,7 @@ const CourseDetail: React.FC = () => {
       totalDistance += R * c;
     }
 
-    return Math.round(totalDistance * 10) / 10; // 소수점 첫째자리까지
+    return Math.round(totalDistance * 10) / 10;
   };
 
   if (loading) {
@@ -115,7 +116,6 @@ const CourseDetail: React.FC = () => {
       )}
 
       <div className="container mx-auto px-6 sm:px-12 py-8">
-        {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => navigate("/my-courses")}
@@ -187,7 +187,6 @@ const CourseDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* Map Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-semibold text-gray-900">{t("course.courseMap")}</h2>
@@ -217,7 +216,6 @@ const CourseDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* Places List */}
         <div>
           <h2 className="text-2xl font-semibold text-gray-900 mb-6">
             {t("course.visitPlaces")} ({course.places.length})
@@ -229,7 +227,6 @@ const CourseDetail: React.FC = () => {
                 className="border border-gray-200 rounded-2xl overflow-hidden hover:shadow-md transition-shadow duration-300"
               >
                 <div className="flex flex-col sm:flex-row">
-                  {/* Place Image */}
                   <div className="sm:w-64 aspect-video sm:aspect-square bg-gray-200 shrink-0">
                     {place.image ? (
                       <img
@@ -238,13 +235,12 @@ const CourseDetail: React.FC = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-300 text-6xl">
-                        📷
+                      <div className="w-full h-full flex items-center justify-center text-gray-300">
+                        <ImageIcon className="w-16 h-16" strokeWidth={1.5} />
                       </div>
                     )}
                   </div>
 
-                  {/* Place Info */}
                   <div className="flex-1 p-6">
                     <div className="flex items-start gap-4 mb-3">
                       <div className="flex items-center justify-center w-8 h-8 bg-gray-900 text-white rounded-full font-semibold text-sm shrink-0 mt-1">

@@ -17,7 +17,7 @@ import ErrorMessage from "../components/common/ErrorMessage";
 import KakaoMap from "../components/map/KakaoMap";
 import Toast from "../components/common/Toast";
 
-import { Calendar, Car, Clock, Earth, Phone, Pin, Dog } from "lucide-react";
+import { Calendar, Car, Clock, Earth, Phone, Pin, Dog, Heart, Image } from "lucide-react";
 
 interface PlaceDetail {
   title: string;
@@ -80,10 +80,8 @@ const PlaceDetail: React.FC = () => {
     setError(null);
 
     try {
-      // 공통 정보 조회
       const commonResponse = await getDetailCommon(placeId);
 
-      // API 에러 응답 체크
       if (commonResponse.response?.header?.resultCode !== "0000") {
         throw new Error(
           commonResponse.response?.header?.resultMsg || "API Error"
@@ -104,7 +102,6 @@ const PlaceDetail: React.FC = () => {
         console.log("Intro data not available");
       }
 
-      // 이미지 정보 조회
       try {
         const imageResponse = await getDetailImage(placeId);
         if (imageResponse.response.body.items.item) {
@@ -172,13 +169,11 @@ const PlaceDetail: React.FC = () => {
 
     try {
       if (isFavorite && favoriteId) {
-        // 즐겨찾기 제거
         await removeFavorite(favoriteId);
         setIsFavorite(false);
         setFavoriteId(null);
         setToast({ message: t("place.removeFromFavorite"), type: "info" });
       } else {
-        // 즐겨찾기 추가
         const newFavoriteId = await addFavorite({
           userId: currentUser.uid,
           placeId,
@@ -227,7 +222,6 @@ const PlaceDetail: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-6 sm:px-12 py-8 max-w-6xl">
-        {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
           className="mb-6 flex items-center gap-2 text-gray-900 font-medium hover:text-gray-600 transition-colors"
@@ -248,7 +242,6 @@ const PlaceDetail: React.FC = () => {
           {t("common.back")}
         </button>
 
-        {/* Main Image */}
         <div className="aspect-video bg-gray-200 rounded-2xl overflow-hidden mb-8">
           {detail.firstimage || images[0] ? (
             <img
@@ -257,16 +250,14 @@ const PlaceDetail: React.FC = () => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-300 text-8xl">
-              📷
+            <div className="w-full h-full flex items-center justify-center text-gray-300">
+              <Image className="w-24 h-24" strokeWidth={1.5} />
             </div>
           )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-10">
-            {/* Header */}
             <div className="pb-8 border-b border-gray-200">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
@@ -277,7 +268,6 @@ const PlaceDetail: React.FC = () => {
                     {detail.title}
                   </h1>
                 </div>
-                {/* Favorite Button */}
                 <button
                   onClick={handleToggleFavorite}
                   disabled={favoriteLoading}
@@ -288,25 +278,15 @@ const PlaceDetail: React.FC = () => {
                   } ${favoriteLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                   aria-label={isFavorite ? "즐겨찾기 제거" : "즐겨찾기 추가"}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
+                  <Heart
+                    className="w-6 h-6"
                     fill={isFavorite ? "currentColor" : "none"}
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
                     strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                    />
-                  </svg>
+                  />
                 </button>
               </div>
             </div>
 
-            {/* Overview */}
             {detail.overview && (
               <div className="pb-10 border-b border-gray-200">
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">
@@ -318,7 +298,6 @@ const PlaceDetail: React.FC = () => {
               </div>
             )}
 
-            {/* Additional Images */}
             {images.length > 1 && (
               <div className="pb-10 border-b border-gray-200">
                 <h2 className="text-2xl font-semibold text-gray-900 mb-6">
@@ -341,7 +320,6 @@ const PlaceDetail: React.FC = () => {
               </div>
             )}
 
-            {/* Map Section */}
             {detail.mapx && detail.mapy && (
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-6">
@@ -379,7 +357,6 @@ const PlaceDetail: React.FC = () => {
             )}
           </div>
 
-          {/* Right Column - Info Card */}
           <div className="lg:col-span-1">
             <div className="sticky top-24">
               <div className="border border-gray-200 rounded-2xl p-6 space-y-6">
@@ -391,7 +368,6 @@ const PlaceDetail: React.FC = () => {
                   {detail.addr1 && (
                     <div className="flex items-start gap-3">
                       <Pin size={24} />
-                      {/* <span className="text-2xl">📍</span> */}
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-900 mb-1">
                           {t("place.address")}
@@ -406,7 +382,6 @@ const PlaceDetail: React.FC = () => {
                   {detail.tel && (
                     <div className="flex items-start gap-3">
                       <Phone size={24} />
-                      {/* <span className="text-2xl">📞</span> */}
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-900 mb-1">
                           {t("place.phone")}
@@ -419,7 +394,6 @@ const PlaceDetail: React.FC = () => {
                   {intro?.usetime && (
                     <div className="flex items-start gap-3">
                       <Clock size={24} />
-                      {/* <span className="text-2xl">🕐</span> */}
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-900 mb-1">
                           {t("place.openingHours")}
@@ -435,7 +409,6 @@ const PlaceDetail: React.FC = () => {
                   {intro?.restdate && (
                     <div className="flex items-start gap-3">
                       <Calendar size={24} />
-                      {/* <span className="text-2xl">📅</span> */}
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-900 mb-1">
                           {t("place.restDate")}

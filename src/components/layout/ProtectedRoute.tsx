@@ -12,7 +12,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { t } = useTranslation();
 
   if (!currentUser) {
-    // 로그인하지 않은 경우 로그인 페이지로 리다이렉트
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div className="bg-white rounded-xl shadow-md p-8 max-w-md w-full text-center">

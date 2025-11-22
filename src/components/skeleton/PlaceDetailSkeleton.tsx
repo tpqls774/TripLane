@@ -4,16 +4,12 @@ const PlaceDetailSkeleton: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-6 sm:px-12 py-8 max-w-6xl">
-        {/* Back Button Skeleton */}
         <div className="h-6 w-32 bg-gray-200 rounded animate-pulse mb-6"></div>
 
-        {/* Main Image Skeleton */}
         <div className="aspect-video bg-gray-200 rounded-2xl animate-pulse mb-8"></div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Left Column - Main Content Skeleton */}
           <div className="lg:col-span-2 space-y-10">
-            {/* Header Skeleton */}
             <div className="pb-8 border-b border-gray-200">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1 space-y-3">
@@ -24,7 +20,6 @@ const PlaceDetailSkeleton: React.FC = () => {
               </div>
             </div>
 
-            {/* Overview Skeleton */}
             <div className="pb-10 border-b border-gray-200">
               <div className="h-8 w-32 bg-gray-200 rounded animate-pulse mb-4"></div>
               <div className="space-y-2">
@@ -34,7 +29,6 @@ const PlaceDetailSkeleton: React.FC = () => {
               </div>
             </div>
 
-            {/* Images Skeleton */}
             <div className="pb-10 border-b border-gray-200">
               <div className="h-8 w-32 bg-gray-200 rounded animate-pulse mb-6"></div>
               <div className="grid grid-cols-2 gap-4">
@@ -47,7 +41,6 @@ const PlaceDetailSkeleton: React.FC = () => {
               </div>
             </div>
 
-            {/* Map Skeleton */}
             <div>
               <div className="h-8 w-24 bg-gray-200 rounded animate-pulse mb-6"></div>
               <div className="w-full h-96 bg-gray-200 rounded-2xl animate-pulse"></div>
@@ -55,7 +48,6 @@ const PlaceDetailSkeleton: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column - Info Card Skeleton */}
           <div className="lg:col-span-1">
             <div className="sticky top-24">
               <div className="border border-gray-200 rounded-2xl p-6 space-y-6">

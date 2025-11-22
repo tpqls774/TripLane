@@ -1,8 +1,6 @@
 @import "tailwindcss";
 
-/* Custom CSS Variables for Theme */
 :root {
-  /* Color Palette */
   --color-primary: #00d9b4;
   --color-primary-dark: #00b896;
   --color-primary-light: #e0f9f5;
@@ -22,10 +20,8 @@
 
   --color-background: #f9fafb;
 
-  /* Fonts */
   --font-sans: system-ui, -apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif;
 
-  /* Apply styles */
   font-family: var(--font-sans);
   line-height: 1.5;
   font-weight: 400;
@@ -44,7 +40,6 @@ body {
   min-height: 100vh;
 }
 
-/* Utility Classes */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -59,7 +54,6 @@ body {
   overflow: hidden;
 }
 
-/* Animation */
 @keyframes slide-in-right {
   from {
     transform: translateX(100%);
@@ -90,7 +84,6 @@ body {
   animation: toast-slide-in 0.18s ease-out;
 }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

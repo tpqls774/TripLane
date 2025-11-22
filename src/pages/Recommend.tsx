@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, ChevronRight, Compass } from "lucide-react";
+import { ChevronLeft, ChevronRight, Compass, Image } from "lucide-react";
 import { getAreaBasedList } from "../services/tourismApi";
 import { ContentType, ThemeType } from "../types";
 import type { TourismPlace, CoursePlace, ThemeTypeValue } from "../types";
@@ -19,7 +19,6 @@ const Recommend: React.FC = () => {
 
   const [places, setPlaces] = useState<TourismPlace[]>([]);
   const [selectedPlaces, setSelectedPlaces] = useState<CoursePlace[]>(() => {
-    // Load from sessionStorage on mount
     const saved = sessionStorage.getItem("selectedPlacesRecommend");
     return saved ? JSON.parse(saved) : [];
   });
@@ -34,9 +33,11 @@ const Recommend: React.FC = () => {
     type: "success" | "error" | "info";
   } | null>(null);
 
-  // Save to sessionStorage whenever selectedPlaces changes
   useEffect(() => {
-    sessionStorage.setItem("selectedPlacesRecommend", JSON.stringify(selectedPlaces));
+    sessionStorage.setItem(
+      "selectedPlacesRecommend",
+      JSON.stringify(selectedPlaces)
+    );
   }, [selectedPlaces]);
 
   useEffect(() => {
@@ -53,7 +54,6 @@ const Recommend: React.FC = () => {
     setError(null);
 
     try {
-      // 테마에 따라 다른 컨텐츠 타입 조회
       const contentTypes = getContentTypesByTheme(theme);
       const allPlaces: TourismPlace[] = [];
       let total = 0;
@@ -140,7 +140,10 @@ const Recommend: React.FC = () => {
 
   const handleSaveCourse = () => {
     if (selectedPlaces.length === 0) {
-      setToast({ message: "최소 1개 이상의 장소를 선택해주세요", type: "error" });
+      setToast({
+        message: "최소 1개 이상의 장소를 선택해주세요",
+        type: "error",
+      });
       return;
     }
     // Clear sessionStorage when creating course
@@ -151,7 +154,7 @@ const Recommend: React.FC = () => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     fetchPlaces(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const isPlaceSelected = (placeId: string) => {
@@ -161,7 +164,6 @@ const Recommend: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-6 sm:px-12 py-8">
-        {/* Header */}
         <div className="mb-12">
           <div className="flex items-center justify-between gap-6 mb-6">
             <div>
@@ -203,24 +205,26 @@ const Recommend: React.FC = () => {
             </div>
           </div>
 
-          {/* Selected Places Info */}
           {selectedPlaces.length > 0 && (
             <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
                 <div>
                   <span className="text-gray-900 font-semibold text-lg">
-                    {selectedPlaces.length}{t("common.placeCount")} {t("common.selected")}
+                    {selectedPlaces.length}
+                    {t("common.placeCount")} {t("common.selected")}
                   </span>
                   <p className="text-gray-600 text-sm mt-1">
                     {t("common.createCourseDesc")}
                   </p>
                 </div>
-                <Button onClick={handleSaveCourse} className="whitespace-nowrap">
+                <Button
+                  onClick={handleSaveCourse}
+                  className="whitespace-nowrap"
+                >
                   {t("recommend.saveCourse")}
                 </Button>
               </div>
 
-              {/* Selected Places List */}
               <div className="border-t border-gray-200 pt-4 mt-4">
                 <h3 className="text-sm font-semibold text-gray-900 mb-3">
                   {t("common.selectedPlaces")}
@@ -276,17 +280,16 @@ const Recommend: React.FC = () => {
           )}
         </div>
 
-        {/* Error State */}
-        {error && <ErrorMessage message={error} onRetry={() => fetchPlaces()} />}
+        {error && (
+          <ErrorMessage message={error} onRetry={() => fetchPlaces()} />
+        )}
 
-        {/* Loading Skeleton */}
         {loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
             <PlaceSkeleton count={20} />
           </div>
         )}
 
-        {/* Places Grid */}
         {!error && places.length === 0 && !loading && (
           <div className="text-center py-12">
             <p className="text-text-secondary text-lg">
@@ -297,19 +300,21 @@ const Recommend: React.FC = () => {
 
         {!error && !loading && places.length > 0 && (
           <>
-            {/* List View */}
             {viewMode === "list" && (
               <>
                 <div className="mb-6 flex items-center justify-between">
                   <p className="text-gray-600">
-                    {t("common.totalPlaces")} <span className="font-semibold text-gray-900">{places.length}</span>{t("common.placeCount")}
+                    {t("common.totalPlaces")}{" "}
+                    <span className="font-semibold text-gray-900">
+                      {places.length}
+                    </span>
+                    {t("common.placeCount")}
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
                   {places.map((place) => (
                     <div key={place.contentid} className="group cursor-pointer">
-                      {/* Image */}
                       <div className="relative aspect-square rounded-2xl overflow-hidden mb-3">
                         {place.firstimage ? (
                           <img
@@ -323,11 +328,10 @@ const Recommend: React.FC = () => {
                             }
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-300 text-6xl">
-                            📷
+                          <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-300">
+                            <Image className="w-16 h-16" strokeWidth={1.5} />
                           </div>
                         )}
-                        {/* Select Button Overlay */}
                         <button
                           onClick={() => togglePlaceSelection(place)}
                           className={`absolute top-4 right-4 p-2.5 rounded-full transition-all ${
@@ -366,7 +370,6 @@ const Recommend: React.FC = () => {
                         </button>
                       </div>
 
-                      {/* Content */}
                       <div
                         className="pl-1"
                         onClick={() =>
@@ -386,7 +389,6 @@ const Recommend: React.FC = () => {
                   ))}
                 </div>
 
-                {/* Pagination */}
                 {totalCount > itemsPerPage && (
                   <div className="flex justify-center items-center gap-2">
                     <button
@@ -401,14 +403,30 @@ const Recommend: React.FC = () => {
                     {(() => {
                       const totalPages = Math.ceil(totalCount / itemsPerPage);
                       const maxVisiblePages = 5;
-                      const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-                      const calculatedEndPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-                      const endPage = calculatedEndPage - startPage + 1 < maxVisiblePages
-                        ? Math.min(totalPages, Math.max(1, calculatedEndPage - maxVisiblePages + 1) + maxVisiblePages - 1)
-                        : calculatedEndPage;
-                      const finalStartPage = endPage - startPage + 1 < maxVisiblePages
-                        ? Math.max(1, endPage - maxVisiblePages + 1)
-                        : startPage;
+                      const startPage = Math.max(
+                        1,
+                        currentPage - Math.floor(maxVisiblePages / 2)
+                      );
+                      const calculatedEndPage = Math.min(
+                        totalPages,
+                        startPage + maxVisiblePages - 1
+                      );
+                      const endPage =
+                        calculatedEndPage - startPage + 1 < maxVisiblePages
+                          ? Math.min(
+                              totalPages,
+                              Math.max(
+                                1,
+                                calculatedEndPage - maxVisiblePages + 1
+                              ) +
+                                maxVisiblePages -
+                                1
+                            )
+                          : calculatedEndPage;
+                      const finalStartPage =
+                        endPage - startPage + 1 < maxVisiblePages
+                          ? Math.max(1, endPage - maxVisiblePages + 1)
+                          : startPage;
 
                       const pages = [];
                       for (let i = finalStartPage; i <= endPage; i++) {
@@ -431,7 +449,9 @@ const Recommend: React.FC = () => {
 
                     <button
                       onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage >= Math.ceil(totalCount / itemsPerPage)}
+                      disabled={
+                        currentPage >= Math.ceil(totalCount / itemsPerPage)
+                      }
                       className="p-2 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       aria-label="다음 페이지"
                     >
@@ -442,7 +462,6 @@ const Recommend: React.FC = () => {
               </>
             )}
 
-            {/* Map View */}
             {viewMode === "map" && (
               <div className="bg-white rounded-xl p-4">
                 <MultiPlaceMap
@@ -470,7 +489,6 @@ const Recommend: React.FC = () => {
         )}
       </div>
 
-      {/* Toast */}
       {toast && (
         <Toast
           message={toast.message}

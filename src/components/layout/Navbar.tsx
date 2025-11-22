@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Home, Sparkles, BookOpen, Heart, Map, Globe } from "lucide-react";
+import { Home, Sparkles, BookOpen, Heart, Map, Globe, User, Menu } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { logout } from "../../services/authService";
 
@@ -10,15 +10,29 @@ const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const toggleLanguage = () => {
     const newLang = i18n.language === "ko" ? "en" : "ko";
     i18n.changeLanguage(newLang);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleLogout = async () => {
     try {
       await logout();
+      setIsMenuOpen(false);
       navigate("/");
     } catch (error) {
       console.error("Logout failed:", error);
@@ -36,7 +50,6 @@ const Navbar: React.FC = () => {
     <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
       <div className="container mx-auto px-6 sm:px-12">
         <div className="flex items-center justify-between h-20">
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
             <Map className="w-8 h-8 text-gray-900" strokeWidth={2} />
             <span className="text-xl font-semibold text-gray-900 hidden sm:inline tracking-tight">
@@ -44,7 +57,6 @@ const Navbar: React.FC = () => {
             </span>
           </Link>
 
-          {/* Navigation Links */}
           <div className="flex items-center gap-1">
             <Link
               to="/"
@@ -95,10 +107,8 @@ const Navbar: React.FC = () => {
               <span className="hidden lg:inline">{t("nav.favorites")}</span>
             </Link>
 
-            {/* Divider */}
             <div className="w-px h-8 bg-gray-200 mx-2"></div>
 
-            {/* Language Toggle */}
             <button
               onClick={toggleLanguage}
               className="px-3 py-2 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors flex items-center gap-2"
@@ -110,18 +120,60 @@ const Navbar: React.FC = () => {
               </span>
             </button>
 
-            {/* Auth Buttons */}
             {currentUser ? (
-              <div className="flex items-center gap-3 ml-2">
-                <span className="text-sm text-gray-700 hidden md:inline font-medium">
-                  {currentUser.displayName || currentUser.email}
-                </span>
+              <div className="relative ml-2" ref={menuRef}>
                 <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-900 transition-colors text-sm font-medium"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="flex items-center gap-2 px-2 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-900 transition-colors text-sm font-medium"
                 >
-                  {t("auth.logout")}
+                  <Menu className="w-4 h-4" strokeWidth={2} />
                 </button>
+
+                {isMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden z-50">
+                    <div className="px-4 py-3 border-b border-gray-200">
+                      <p className="text-sm font-medium text-gray-900">
+                        {currentUser.displayName || currentUser.email}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {currentUser.email}
+                      </p>
+                    </div>
+                    <div className="py-1">
+                      <Link
+                        to="/profile"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors"
+                      >
+                        <User className="w-4 h-4 text-gray-600" strokeWidth={2} />
+                        <span className="text-sm text-gray-700 font-medium">
+                          {t("nav.profile")}
+                        </span>
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors text-left"
+                      >
+                        <svg
+                          className="w-4 h-4 text-gray-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                          />
+                        </svg>
+                        <span className="text-sm text-gray-700 font-medium">
+                          {t("auth.logout")}
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <Link
