@@ -68,29 +68,24 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
           centerLng = 126.978;
         }
 
-        // 지도 옵션
         const options = {
           center: new window.kakao.maps.LatLng(centerLat, centerLng),
-          level: 8, // 여러 장소를 보기 위해 더 넓은 범위
+          level: 8,
         };
 
-        // 지도 생성
         const map = new window.kakao.maps.Map(mapContainer.current, options);
         mapRef.current = map;
         console.log("Map created successfully");
 
-        // 기존 마커 제거
         markersRef.current.forEach((marker) => marker.setMap(null));
         markersRef.current = [];
 
-        // 각 장소에 마커 추가
         places.forEach((place, index) => {
           const markerPosition = new window.kakao.maps.LatLng(
             place.lat,
             place.lng
           );
 
-          // 선택된 장소는 다른 색상의 마커 사용
           const isSelected = selectedPlaceIds.includes(place.placeId);
 
           const marker = new window.kakao.maps.Marker({
@@ -101,7 +96,6 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
           marker.setMap(map);
           markersRef.current.push(marker);
 
-          // 인포윈도우 생성
           const infowindowContent = `
             <div style="padding: 10px; min-width: 150px; text-align: center; ${
               isSelected
@@ -125,37 +119,30 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
             content: infowindowContent,
           });
 
-          // 마커 클릭 이벤트
           window.kakao.maps.event.addListener(marker, "click", () => {
             if (onPlaceClick) {
               onPlaceClick(place.placeId);
             }
           });
 
-          // 마커에 마우스오버 이벤트
           window.kakao.maps.event.addListener(marker, "mouseover", () => {
             infowindow.open(map, marker);
           });
 
-          // 마커에 마우스아웃 이벤트
           window.kakao.maps.event.addListener(marker, "mouseout", () => {
             infowindow.close();
           });
         });
 
-        // 경로선 그리기
         if (showRoute && places.length > 1) {
-          // 기존 경로선 제거
           if (polylineRef.current) {
             polylineRef.current.setMap(null);
           }
 
-          // 경로 좌표 배열 생성
           const linePath = places.map(
             (place) => new window.kakao.maps.LatLng(place.lat, place.lng)
           );
 
-          // 경로선 생성
           const polyline = new window.kakao.maps.Polyline({
             path: linePath,
             strokeWeight: 4,
@@ -167,12 +154,10 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
           polyline.setMap(map);
           polylineRef.current = polyline;
         } else if (polylineRef.current) {
-          // 경로 표시 비활성화시 경로선 제거
           polylineRef.current.setMap(null);
           polylineRef.current = null;
         }
 
-        // 모든 마커가 보이도록 지도 범위 재설정
         if (places.length > 0) {
           const bounds = new window.kakao.maps.LatLngBounds();
           places.forEach((place) => {
@@ -187,7 +172,6 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
       }
     };
 
-    // Kakao Maps SDK가 로드되었는지 확인
     if (window.kakao && window.kakao.maps) {
       console.log("Kakao SDK is available, loading map...");
       window.kakao.maps.load(loadKakaoMap);
@@ -201,7 +185,6 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
         }
       }, 100);
 
-      // 10초 후 타임아웃
       setTimeout(() => {
         clearInterval(checkKakao);
         console.error("Kakao SDK loading timeout");

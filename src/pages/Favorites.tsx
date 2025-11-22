@@ -8,7 +8,7 @@ import ErrorMessage from "../components/common/ErrorMessage";
 import PlaceSkeleton from "../components/skeleton/PlaceSkeleton";
 import Toast from "../components/common/Toast";
 
-import { Heart } from "lucide-react";
+import { Heart, Image } from "lucide-react";
 
 const Favorites: React.FC = () => {
   const navigate = useNavigate();
@@ -76,22 +76,20 @@ const Favorites: React.FC = () => {
           </div>
           {!loading && (
             <p className="text-gray-600 text-lg">
-              {t("common.totalPlaces")} {favorites.length}{t("common.placeCount")}
+              {t("common.totalPlaces")} {favorites.length}
+              {t("common.placeCount")}
             </p>
           )}
         </div>
 
-        {/* Error State */}
         {error && <ErrorMessage message={error} onRetry={fetchFavorites} />}
 
-        {/* Loading Skeleton */}
         {loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <PlaceSkeleton count={6} />
           </div>
         )}
 
-        {/* Empty State */}
         {!loading && !error && favorites.length === 0 && (
           <div className="text-center py-20">
             <Heart
@@ -105,7 +103,6 @@ const Favorites: React.FC = () => {
           </div>
         )}
 
-        {/* Favorites Grid */}
         {!loading && !error && favorites.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {favorites.map((favorite) => (
@@ -113,7 +110,6 @@ const Favorites: React.FC = () => {
                 key={favorite.id}
                 className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow"
               >
-                {/* Image */}
                 <div
                   className="aspect-video bg-gray-200 cursor-pointer"
                   onClick={() =>
@@ -127,13 +123,12 @@ const Favorites: React.FC = () => {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-6xl">
-                      📷
+                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                      <Image className="w-16 h-16" strokeWidth={1.5} />
                     </div>
                   )}
                 </div>
 
-                {/* Content */}
                 <div className="p-4">
                   <h3
                     className="text-lg font-bold text-text-primary mb-1 cursor-pointer hover:text-primary line-clamp-2"
@@ -147,7 +142,6 @@ const Favorites: React.FC = () => {
                     {favorite.addr1}
                   </p>
 
-                  {/* Actions */}
                   <div className="flex gap-2">
                     <button
                       onClick={() =>
@@ -177,7 +171,6 @@ const Favorites: React.FC = () => {
         )}
       </div>
 
-      {/* Toast */}
       {toast && (
         <Toast
           message={toast.message}

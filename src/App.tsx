@@ -12,6 +12,7 @@ import CourseDetail from "./pages/CourseDetail";
 import PlaceDetail from "./pages/PlaceDetail";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Profile from "./pages/Profile";
 
 const App = () => {
   return (
@@ -64,6 +65,14 @@ const App = () => {
               }
             />
             <Route path="/place/:placeId" element={<PlaceDetail />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
           </Routes>

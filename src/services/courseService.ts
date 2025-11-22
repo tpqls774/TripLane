@@ -15,7 +15,6 @@ import type { SavedCourse } from "../types";
 
 const COURSES_COLLECTION = "courses";
 
-// Create - 새 코스 생성
 export const createCourse = async (
   courseData: Omit<SavedCourse, "id" | "createdAt" | "updatedAt">
 ): Promise<string> => {
@@ -33,7 +32,6 @@ export const createCourse = async (
   }
 };
 
-// Read - 특정 코스 조회
 export const getCourse = async (
   courseId: string
 ): Promise<SavedCourse | null> => {
@@ -54,7 +52,6 @@ export const getCourse = async (
   }
 };
 
-// Read - 사용자의 모든 코스 조회
 export const getUserCourses = async (
   userId: string
 ): Promise<SavedCourse[]> => {
@@ -75,7 +72,6 @@ export const getUserCourses = async (
       } as SavedCourse);
     });
 
-    // 클라이언트 측에서 정렬
     courses.sort((a, b) => b.updatedAt - a.updatedAt);
 
     return courses;
@@ -85,7 +81,6 @@ export const getUserCourses = async (
   }
 };
 
-// Update - 코스 수정
 export const updateCourse = async (
   courseId: string,
   updates: Partial<Omit<SavedCourse, "id" | "createdAt">>
@@ -102,7 +97,6 @@ export const updateCourse = async (
   }
 };
 
-// Delete - 코스 삭제
 export const deleteCourse = async (courseId: string): Promise<void> => {
   try {
     const docRef = doc(db, COURSES_COLLECTION, courseId);
@@ -113,7 +107,6 @@ export const deleteCourse = async (courseId: string): Promise<void> => {
   }
 };
 
-// 테마별 공개 코스 조회 (추가 기능)
 export const getPublicCoursesByTheme = async (
   theme: string
 ): Promise<SavedCourse[]> => {

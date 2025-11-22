@@ -57,7 +57,6 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section */}
       <div className="relative h-[60vh] min-h-[500px] bg-linear-to-br from-rose-50 via-white to-teal-50 flex items-center justify-center">
         <div className="container mx-auto px-6 sm:px-12 text-center">
           <div className="flex justify-center mb-6">
@@ -70,11 +69,14 @@ const Home: React.FC = () => {
             {t("home.subtitle")}
           </p>
 
-          {/* Hero CTA */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button
               size="lg"
-              onClick={() => document.getElementById('theme-section')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() =>
+                document
+                  .getElementById("theme-section")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
               className="text-lg px-8 py-4"
             >
               {t("home.selectTheme")}
@@ -91,7 +93,6 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      {/* Theme Selection */}
       <div id="theme-section" className="container mx-auto px-6 sm:px-12 py-16">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900 mb-4">
@@ -134,7 +135,9 @@ const Home: React.FC = () => {
                 </p>
                 <p className="text-[#00d9b4] text-sm font-medium flex items-center gap-1">
                   {t(`home.action.${theme.type}`)}
-                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  <span className="group-hover:translate-x-1 transition-transform">
+                    →
+                  </span>
                 </p>
               </div>
             );
@@ -142,7 +145,6 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      {/* Featured Section */}
       <div className="bg-gray-50 py-16">
         <div className="container mx-auto px-6 sm:px-12 text-center">
           <h2 className="text-3xl font-semibold text-gray-900 mb-4">

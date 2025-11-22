@@ -4,7 +4,6 @@ const CourseDetailSkeleton: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-6 sm:px-12 py-8">
-        {/* Header Skeleton */}
         <div className="mb-8">
           <div className="h-6 w-40 bg-gray-200 rounded animate-pulse mb-6"></div>
 
@@ -31,7 +30,6 @@ const CourseDetailSkeleton: React.FC = () => {
           </div>
         </div>
 
-        {/* Map Section Skeleton */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div className="h-8 w-32 bg-gray-200 rounded animate-pulse"></div>
@@ -40,7 +38,6 @@ const CourseDetailSkeleton: React.FC = () => {
           <div className="h-96 bg-gray-200 rounded-2xl animate-pulse"></div>
         </div>
 
-        {/* Places List Skeleton */}
         <div>
           <div className="h-8 w-48 bg-gray-200 rounded animate-pulse mb-6"></div>
           <div className="space-y-4">

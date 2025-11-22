@@ -10,6 +10,7 @@ import {
   Users,
   Calendar,
   Eye,
+  Image,
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { getUserCourses, deleteCourse } from "../services/courseService";
@@ -94,7 +95,6 @@ const MyCourses: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-6 sm:px-12 py-8">
-        {/* Header */}
         <div className="mb-12">
           <div className="flex items-center justify-between gap-6 mb-6">
             <div>
@@ -121,17 +121,14 @@ const MyCourses: React.FC = () => {
           </div>
         </div>
 
-        {/* Error State */}
         {error && <ErrorMessage message={error} onRetry={fetchCourses} />}
 
-        {/* Loading Skeleton */}
         {loading && (
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
             <CourseSkeleton count={6} />
           </div>
         )}
 
-        {/* Empty State */}
         {!error && courses.length === 0 && !loading && (
           <div className="text-center py-20">
             <BookOpen
@@ -145,14 +142,11 @@ const MyCourses: React.FC = () => {
           </div>
         )}
 
-        {/* Courses Grid */}
         {!error && !loading && courses.length > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
             {courses.map((course) => (
               <div key={course.id} className="relative group">
-                {/* Course Card */}
                 <div className="border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                  {/* Places Preview Images */}
                   <div className="aspect-4/3 bg-gray-200 overflow-hidden">
                     {course.places.length > 0 && course.places[0].image ? (
                       <img
@@ -161,13 +155,12 @@ const MyCourses: React.FC = () => {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-300 text-6xl">
-                        📷
+                      <div className="w-full h-full flex items-center justify-center text-gray-300">
+                        <Image className="w-16 h-16" strokeWidth={1.5} />
                       </div>
                     )}
                   </div>
 
-                  {/* Course Content */}
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-3">
                       <h2 className="text-xl font-semibold text-gray-900 flex-1 line-clamp-1">
@@ -185,7 +178,8 @@ const MyCourses: React.FC = () => {
                     <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
                       <span className="flex items-center gap-1">
                         <MapPin className="w-4 h-4" strokeWidth={2} />
-                        {course.places.length}{t("common.placeCount")}
+                        {course.places.length}
+                        {t("common.placeCount")}
                       </span>
                       {course.travelers && (
                         <span className="flex items-center gap-1">
@@ -202,12 +196,10 @@ const MyCourses: React.FC = () => {
                       </p>
                     )}
 
-                    {/* Metadata */}
                     <p className="text-xs text-gray-500 mb-4 pb-4 border-b border-gray-200">
                       {formatDate(course.updatedAt)} {t("common.update")}
                     </p>
 
-                    {/* Actions */}
                     <div className="flex gap-2">
                       <Button
                         onClick={() => navigate(`/course/${course.id}/view`)}
@@ -248,7 +240,6 @@ const MyCourses: React.FC = () => {
         )}
       </div>
 
-      {/* Toast */}
       {toast && (
         <Toast
           message={toast.message}

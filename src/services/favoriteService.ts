@@ -13,7 +13,6 @@ import type { Favorite } from "../types/favorite";
 
 const FAVORITES_COLLECTION = "favorites";
 
-// 즐겨찾기 추가
 export const addFavorite = async (
   favorite: Omit<Favorite, "id" | "createdAt">
 ): Promise<string> => {
@@ -29,7 +28,6 @@ export const addFavorite = async (
   }
 };
 
-// 즐겨찾기 제거
 export const removeFavorite = async (favoriteId: string): Promise<void> => {
   try {
     await deleteDoc(doc(db, FAVORITES_COLLECTION, favoriteId));
@@ -39,7 +37,6 @@ export const removeFavorite = async (favoriteId: string): Promise<void> => {
   }
 };
 
-// 사용자의 모든 즐겨찾기 조회
 export const getUserFavorites = async (userId: string): Promise<Favorite[]> => {
   try {
     const q = query(
@@ -64,7 +61,6 @@ export const getUserFavorites = async (userId: string): Promise<Favorite[]> => {
       });
     });
 
-    // 최신순 정렬
     favorites.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
     return favorites;
@@ -74,7 +70,6 @@ export const getUserFavorites = async (userId: string): Promise<Favorite[]> => {
   }
 };
 
-// 특정 장소가 즐겨찾기되어 있는지 확인
 export const getFavoriteByPlace = async (
   userId: string,
   placeId: string

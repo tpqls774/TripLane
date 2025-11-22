@@ -3,7 +3,6 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 // Firebase 설정
-// 실제 사용 시 환경변수로 관리하는 것을 권장
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "YOUR_API_KEY",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "YOUR_AUTH_DOMAIN",
@@ -15,13 +14,10 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID || "YOUR_APP_ID",
 };
 
-// Firebase 초기화
 const app = initializeApp(firebaseConfig);
 
-// Firestore 데이터베이스
 export const db = getFirestore(app);
 
-// Auth
 export const auth = getAuth(app);
 
 export default app;

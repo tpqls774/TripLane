@@ -13,6 +13,7 @@ import CourseEditSkeleton from "../components/skeleton/CourseEditSkeleton";
 import Button from "../components/common/Button";
 import Input from "../components/common/Input";
 import Toast from "../components/common/Toast";
+import { Image } from "lucide-react";
 
 const CourseEdit: React.FC = () => {
   const { t } = useTranslation();
@@ -21,7 +22,6 @@ const CourseEdit: React.FC = () => {
   const location = useLocation();
   const { currentUser } = useAuth();
 
-  // 새 코스 생성시 Recommend 페이지에서 전달된 데이터
   const initialData = location.state as {
     theme?: ThemeTypeValue;
     places?: CoursePlace[];
@@ -107,12 +107,10 @@ const CourseEdit: React.FC = () => {
       };
 
       if (courseId === "new" || !courseId) {
-        // 새 코스 생성
         await createCourse(courseData);
         setToast({ message: t("course.saveSuccess"), type: "success" });
         setTimeout(() => navigate("/my-courses"), 1500);
       } else {
-        // 기존 코스 수정
         await updateCourse(courseId, courseData);
         setToast({ message: t("course.updateSuccess"), type: "success" });
         setTimeout(() => navigate("/my-courses"), 1500);
@@ -127,7 +125,6 @@ const CourseEdit: React.FC = () => {
 
   const handleRemovePlace = (index: number) => {
     const newPlaces = places.filter((_, i) => i !== index);
-    // 순서 재조정
     newPlaces.forEach((place, idx) => {
       place.order = idx;
     });
@@ -145,7 +142,6 @@ const CourseEdit: React.FC = () => {
       newPlaces[index],
     ];
 
-    // 순서 재조정
     newPlaces.forEach((place, idx) => {
       place.order = idx;
     });
@@ -168,7 +164,6 @@ const CourseEdit: React.FC = () => {
       )}
 
       <div className="container mx-auto px-6 sm:px-12 py-8 max-w-5xl">
-        {/* Header */}
         <div className="mb-12">
           <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-3">
             {courseId === "new" ? t("course.create") : t("common.edit")}
@@ -176,9 +171,7 @@ const CourseEdit: React.FC = () => {
           <p className="text-gray-600 text-lg">{t("course.enterInfo")}</p>
         </div>
 
-        {/* Form */}
         <div className="space-y-8">
-          {/* Basic Info Card */}
           <div className="border border-gray-200 rounded-2xl p-6 sm:p-8 bg-white">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
               {t("common.basicInfo")}
@@ -249,7 +242,6 @@ const CourseEdit: React.FC = () => {
             </div>
           </div>
 
-          {/* Places Card */}
           <div className="border border-gray-200 rounded-2xl p-6 sm:p-8 bg-white">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-gray-900">
@@ -275,7 +267,6 @@ const CourseEdit: React.FC = () => {
                     key={index}
                     className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-gray-300 transition-colors"
                   >
-                    {/* Order */}
                     <div className="flex flex-col gap-1">
                       <button
                         onClick={() => handleMovePlace(index, "up")}
@@ -296,7 +287,6 @@ const CourseEdit: React.FC = () => {
                       </button>
                     </div>
 
-                    {/* Image */}
                     <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden shrink-0">
                       {place.image ? (
                         <img
@@ -305,13 +295,12 @@ const CourseEdit: React.FC = () => {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-2xl">
-                          📷
+                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                          <Image className="w-8 h-8" strokeWidth={1.5} />
                         </div>
                       )}
                     </div>
 
-                    {/* Info */}
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-gray-900 truncate">
                         {place.title}
@@ -321,7 +310,6 @@ const CourseEdit: React.FC = () => {
                       </p>
                     </div>
 
-                    {/* Remove Button */}
                     <Button
                       variant="danger"
                       size="sm"
@@ -335,7 +323,6 @@ const CourseEdit: React.FC = () => {
             )}
           </div>
 
-          {/* Actions */}
           <div className="flex gap-3 justify-end">
             <Button variant="secondary" onClick={() => navigate("/my-courses")}>
               {t("common.cancel")}
