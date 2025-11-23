@@ -156,19 +156,19 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
           markersRef.current.push(marker);
 
           const infowindowContent = `
-            <div style="padding: 10px; min-width: 150px; text-align: center; ${
+            <div style="padding: 10px; width: 250px; max-width: 250px; text-align: center; box-sizing: border-box; ${
               isSelected
                 ? "background: #fef2f2; border: 2px solid #ef4444;"
                 : ""
             }">
               <div style="font-weight: bold; margin-bottom: 5px; color: ${
                 isSelected ? "#ef4444" : "#000"
-              };">
+              }; word-break: break-all; overflow-wrap: break-word; white-space: normal;">
                 ${isSelected ? "✓ " : ""}${index + 1}. ${place.title}
               </div>
               ${
                 place.address
-                  ? `<div style="font-size: 12px; color: #666;">${place.address}</div>`
+                  ? `<div style="font-size: 12px; color: #666; word-break: break-all; overflow-wrap: break-word; white-space: normal;">${place.address}</div>`
                   : ""
               }
             </div>
@@ -283,19 +283,19 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
       markersRef.current.push(marker);
 
       const infowindowContent = `
-        <div style="padding: 10px; min-width: 150px; text-align: center; ${
+        <div style="padding: 10px; width: 250px; max-width: 250px; text-align: center; box-sizing: border-box; ${
           isSelected
             ? "background: #fef2f2; border: 2px solid #ef4444;"
             : ""
         }">
           <div style="font-weight: bold; margin-bottom: 5px; color: ${
             isSelected ? "#ef4444" : "#000"
-          };">
+          }; word-break: break-all; overflow-wrap: break-word; white-space: normal;">
             ${isSelected ? "✓ " : ""}${index + 1}. ${place.title}
           </div>
           ${
             place.address
-              ? `<div style="font-size: 12px; color: #666;">${place.address}</div>`
+              ? `<div style="font-size: 12px; color: #666; word-break: break-all; overflow-wrap: break-word; white-space: normal;">${place.address}</div>`
               : ""
           }
         </div>

@@ -58,7 +58,7 @@ const Home: React.FC = () => {
     <div className="min-h-screen bg-white">
       <div className="relative h-[60vh] min-h-[500px] bg-linear-to-br from-rose-50 via-white to-teal-50 flex items-center justify-center">
         <div className="container mx-auto px-6 sm:px-12 text-center">
-          <p className="text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto mb-8 font-light">
+          <p className="text-xl sm:text-3xl text-gray-600 max-w-3xl mx-auto mb-8 font-bold">
             {t("home.subtitle")}
           </p>
 
