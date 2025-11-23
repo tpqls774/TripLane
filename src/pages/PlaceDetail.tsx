@@ -323,7 +323,7 @@ const PlaceDetail: React.FC = () => {
             {detail.mapx && detail.mapy && (
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-                  위치
+                  {t("place.location")}
                 </h2>
                 <div className="w-full h-96 rounded-2xl overflow-hidden">
                   {(() => {
@@ -333,7 +333,7 @@ const PlaceDetail: React.FC = () => {
                     if (isNaN(lat) || isNaN(lng)) {
                       return (
                         <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-500">
-                          좌표 정보를 사용할 수 없습니다.
+                          {t("place.coordinatesNotAvailable")}
                         </div>
                       );
                     }

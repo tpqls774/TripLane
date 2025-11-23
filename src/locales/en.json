@@ -26,7 +26,10 @@
     "addedToCourse": "Added to course",
     "removedFromCourse": "Removed from course",
     "all": "All",
-    "category": "Category"
+    "category": "Category",
+    "noResults": "No results found",
+    "tryDifferentSearch": "Try a different search term or category",
+    "searching": "Searching"
   },
   "nav": {
     "home": "Home",
@@ -159,7 +162,9 @@
     "homepageVisit": "Visit Website",
     "restDate": "Closed Days",
     "parking": "Parking Info",
-    "petFriendly": "Pet-Friendly"
+    "petFriendly": "Pet-Friendly",
+    "location": "Location",
+    "coordinatesNotAvailable": "Coordinates information is not available"
   },
   "error": {
     "networkError": "Network error occurred",

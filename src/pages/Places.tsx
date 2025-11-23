@@ -240,10 +240,10 @@ const Places: React.FC = () => {
               strokeWidth={1.5}
             />
             <h2 className="text-2xl font-semibold text-gray-900 mb-3 tracking-tight">
-              검색 결과가 없습니다
+              {t("common.noResults")}
             </h2>
             <p className="text-gray-600 mb-8">
-              다른 검색어나 카테고리를 선택해보세요
+              {t("common.tryDifferentSearch")}
             </p>
           </div>
         )}

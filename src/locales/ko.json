@@ -26,7 +26,10 @@
     "addedToCourse": "코스에 추가되었습니다",
     "removedFromCourse": "코스에서 제거되었습니다",
     "all": "전체",
-    "category": "카테고리"
+    "category": "카테고리",
+    "noResults": "검색 결과가 없습니다",
+    "tryDifferentSearch": "다른 검색어나 카테고리를 선택해보세요",
+    "searching": "검색 중"
   },
   "nav": {
     "home": "홈",
@@ -159,7 +162,9 @@
     "homepageVisit": "홈페이지 방문",
     "restDate": "휴무일",
     "parking": "주차 정보",
-    "petFriendly": "반려동물 동반 가능"
+    "petFriendly": "반려동물 동반 가능",
+    "location": "위치",
+    "coordinatesNotAvailable": "좌표 정보를 사용할 수 없습니다"
   },
   "error": {
     "networkError": "네트워크 오류가 발생했습니다",
