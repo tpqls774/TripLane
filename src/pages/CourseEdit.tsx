@@ -166,7 +166,7 @@ const CourseEdit: React.FC = () => {
       <div className="container mx-auto px-6 sm:px-12 py-8 max-w-5xl">
         <div className="mb-12">
           <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-3">
-            {courseId === "new" ? t("course.create") : t("common.edit")}
+            {!courseId ? t("course.create") : t("common.edit")}
           </h1>
           <p className="text-gray-600 text-lg">{t("course.enterInfo")}</p>
         </div>
@@ -207,9 +207,9 @@ const CourseEdit: React.FC = () => {
                   onChange={(e) => setTheme(e.target.value as ThemeTypeValue)}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 text-gray-900"
                 >
-                  {Object.values(ThemeType).map((t) => (
-                    <option key={t} value={t}>
-                      {t}
+                  {Object.values(ThemeType).map((themeValue) => (
+                    <option key={themeValue} value={themeValue}>
+                      {t(`theme.${themeValue}`)}
                     </option>
                   ))}
                 </select>
