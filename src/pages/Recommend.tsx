@@ -253,9 +253,16 @@ const Recommend: React.FC = () => {
         )}
 
         {isLoading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
-            <PlaceSkeleton count={20} />
-          </div>
+          <>
+            <div className="mb-6 flex items-center justify-between">
+              <p className="text-gray-600">
+                <span className="inline-block w-32 h-4 bg-gray-200 rounded animate-pulse"></span>
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
+              <PlaceSkeleton count={20} />
+            </div>
+          </>
         )}
 
         {!error && places.length === 0 && !isLoading && (

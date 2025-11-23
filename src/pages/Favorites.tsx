@@ -5,7 +5,7 @@ import { useAuth } from "../hooks/useAuth";
 import { getUserFavorites, removeFavorite } from "../services/favoriteService";
 import type { Favorite } from "../types/favorite";
 import ErrorMessage from "../components/common/ErrorMessage";
-import PlaceSkeleton from "../components/skeleton/PlaceSkeleton";
+import FavoriteSkeleton from "../components/skeleton/FavoriteSkeleton";
 import Toast from "../components/common/Toast";
 
 import { Heart, Image } from "lucide-react";
@@ -86,7 +86,7 @@ const Favorites: React.FC = () => {
 
         {loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <PlaceSkeleton count={6} />
+            <FavoriteSkeleton count={6} />
           </div>
         )}
 
