@@ -15,6 +15,58 @@ import Input from "../components/common/Input";
 import Toast from "../components/common/Toast";
 import { Image } from "lucide-react";
 
+// 두 지점 간의 거리를 계산하는 함수 (Haversine 공식)
+const getDistance = (p1: CoursePlace, p2: CoursePlace) => {
+  const R = 6371; // 지구의 반경 (km)
+  const dLat = ((p2.lat - p1.lat) * Math.PI) / 180;
+  const dLon = ((p2.lng - p1.lng) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((p1.lat * Math.PI) / 180) *
+      Math.cos((p2.lat * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+};
+
+// Nearest Neighbor 알고리즘으로 장소 순서 최적화
+const optimizeOrderByNearestNeighbor = (
+  places: CoursePlace[]
+): CoursePlace[] => {
+  if (places.length < 2) return places;
+
+  const unvisited = [...places];
+  const orderedPlaces: CoursePlace[] = [];
+
+  // 첫 번째 장소를 시작점으로 설정
+  let currentPlace = unvisited.shift();
+  if (currentPlace) {
+    orderedPlaces.push(currentPlace);
+  }
+
+  while (unvisited.length > 0) {
+    let nearestIndex = -1;
+    let minDistance = Infinity;
+
+    for (let i = 0; i < unvisited.length; i++) {
+      const distance = getDistance(currentPlace!, unvisited[i]);
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearestIndex = i;
+      }
+    }
+
+    if (nearestIndex !== -1) {
+      currentPlace = unvisited.splice(nearestIndex, 1)[0];
+      orderedPlaces.push(currentPlace);
+    }
+  }
+
+  // 최종 순서(order) 업데이트
+  return orderedPlaces.map((place, index) => ({ ...place, order: index }));
+};
+
 const CourseEdit: React.FC = () => {
   const { t } = useTranslation();
   const { courseId } = useParams();
@@ -34,7 +86,7 @@ const CourseEdit: React.FC = () => {
   const [theme, setTheme] = useState<ThemeTypeValue>(
     initialData?.theme || ThemeType.WELLNESS
   );
-  const [places, setPlaces] = useState<CoursePlace[]>([]);
+  const [places, setPlaces] = useState<CoursePlace[]>(initialData?.places || []);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [travelers, setTravelers] = useState(2);
@@ -68,8 +120,12 @@ const CourseEdit: React.FC = () => {
   useEffect(() => {
     if (courseId && courseId !== "new") {
       fetchCourse();
+    } else if (initialData?.places) {
+      // 새 코스 생성 시 전달된 장소들의 순서를 최적화합니다.
+      const optimizedPlaces = optimizeOrderByNearestNeighbor(initialData.places);
+      setPlaces(optimizedPlaces);
     }
-  }, [courseId]);
+  }, [courseId, fetchCourse, initialData]);
 
   const handleSave = async () => {
     if (!title.trim()) {
@@ -82,6 +138,26 @@ const CourseEdit: React.FC = () => {
         message: t("course.addMinPlace"),
         type: "error",
       });
+      return;
+    }
+
+    if (!description.trim()) {
+      setToast({ message: t("course.enterDescription"), type: "error" });
+      return;
+    }
+
+    if (!startDate) {
+      setToast({ message: t("course.enterStartDate"), type: "error" });
+      return;
+    }
+
+    if (!endDate) {
+      setToast({ message: t("course.enterEndDate"), type: "error" });
+      return;
+    }
+
+    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+      setToast({ message: t("course.invalidDateRange"), type: "error" });
       return;
     }
 
@@ -114,7 +190,11 @@ const CourseEdit: React.FC = () => {
       }
     } catch (err) {
       console.error("Failed to save course:", err);
-      setToast({ message: t("course.saveError"), type: "error" });
+      if (err instanceof Error && err.message.includes("permission-denied")) {
+        setToast({ message: t("course.missingFields"), type: "error" });
+      } else {
+        setToast({ message: t("course.saveError"), type: "error" });
+      }
     } finally {
       setSaving(false);
     }
