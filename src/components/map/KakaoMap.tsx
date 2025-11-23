@@ -1,68 +1,12 @@
 import React, { useEffect, useRef } from "react";
+import type { KakaoMapsMap } from "../../types/kakaoMaps";
+import "../../types/kakaoMaps"; // 전역 타입 선언을 위해 import
 
 interface KakaoMapProps {
   latitude: number;
   longitude: number;
   title: string;
   address?: string;
-}
-
-// Kakao Maps SDK 타입 정의
-interface KakaoMapsLatLng {
-  getLat(): number;
-  getLng(): number;
-}
-
-interface KakaoMapsMap {
-  setCenter(latlng: KakaoMapsLatLng): void;
-  setLevel(level: number): void;
-  getLevel(): number;
-  getCenter(): KakaoMapsLatLng;
-}
-
-interface KakaoMapsMarker {
-  setMap(map: KakaoMapsMap | null): void;
-  getPosition(): KakaoMapsLatLng;
-}
-
-interface KakaoMapsInfoWindow {
-  open(map: KakaoMapsMap, marker: KakaoMapsMarker): void;
-  close(): void;
-}
-
-interface KakaoMapsEvent {
-  addListener(
-    target: KakaoMapsMarker,
-    eventType: string,
-    handler: () => void
-  ): void;
-}
-
-interface KakaoMapsNamespace {
-  LatLng: new (lat: number, lng: number) => KakaoMapsLatLng;
-  Map: new (container: HTMLElement, options: {
-    center: KakaoMapsLatLng;
-    level: number;
-  }) => KakaoMapsMap;
-  Marker: new (options: {
-    position: KakaoMapsLatLng;
-    title?: string;
-  }) => KakaoMapsMarker;
-  InfoWindow: new (options: {
-    content: string;
-  }) => KakaoMapsInfoWindow;
-  event: KakaoMapsEvent;
-  load(callback: () => void): void;
-}
-
-interface KakaoSDK {
-  maps: KakaoMapsNamespace;
-}
-
-declare global {
-  interface Window {
-    kakao: KakaoSDK;
-  }
 }
 
 const KakaoMap: React.FC<KakaoMapProps> = ({
