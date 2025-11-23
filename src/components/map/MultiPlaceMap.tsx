@@ -109,23 +109,22 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
         return; // 이미 초기화되었으면 다시 초기화하지 않음
       }
 
+      // places가 없으면 초기화 대기
+      if (places.length === 0) {
+        return;
+      }
+
       try {
         // 지도 중심 계산 (모든 장소의 평균 위치)
         let centerLat = 0;
         let centerLng = 0;
 
-        if (places.length > 0) {
-          places.forEach((place) => {
-            centerLat += place.lat;
-            centerLng += place.lng;
-          });
-          centerLat /= places.length;
-          centerLng /= places.length;
-        } else {
-          // 기본값: 서울 시청
-          centerLat = 37.5665;
-          centerLng = 126.978;
-        }
+        places.forEach((place) => {
+          centerLat += place.lat;
+          centerLng += place.lng;
+        });
+        centerLat /= places.length;
+        centerLng /= places.length;
 
         const options = {
           center: new window.kakao.maps.LatLng(centerLat, centerLng),
@@ -195,16 +194,33 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
         });
 
         // 초기화 시에만 bounds 설정
-        if (places.length > 0) {
-          const bounds = new window.kakao.maps.LatLngBounds();
-          places.forEach((place) => {
-            bounds.extend(new window.kakao.maps.LatLng(place.lat, place.lng));
-          });
-          map.setBounds(bounds);
-        }
+        const bounds = new window.kakao.maps.LatLngBounds();
+        places.forEach((place) => {
+          bounds.extend(new window.kakao.maps.LatLng(place.lat, place.lng));
+        });
+        map.setBounds(bounds);
 
         // places를 문자열로 변환하여 저장 (내용 비교용)
         placesRef.current = JSON.stringify(places.map(p => ({ placeId: p.placeId, lat: p.lat, lng: p.lng })));
+
+        // 초기화 완료 후 경로 그리기 (showRoute가 true인 경우)
+        if (showRoute && places.length > 1) {
+          const optimizedPlaces = optimizeRoute(places);
+          const linePath = optimizedPlaces.map(
+            (place) => new window.kakao.maps.LatLng(place.lat, place.lng)
+          );
+
+          const polyline = new window.kakao.maps.Polyline({
+            path: linePath,
+            strokeWeight: 4,
+            strokeColor: "#ef4444",
+            strokeOpacity: 0.8,
+            strokeStyle: "solid",
+          });
+
+          polyline.setMap(map);
+          polylineRef.current = polyline;
+        }
 
       } catch (error) {
         console.error("Error initializing Multi-Place Kakao Map:", error);
@@ -229,7 +245,7 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
       return () => clearInterval(checkKakao);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // 빈 배열로 변경하여 한 번만 실행 (지도는 한 번만 초기화)
+  }, [places.length]); // places.length를 의존성에 추가하여 places가 로드되면 초기화
 
   // places가 실제로 변경되었을 때만 마커 업데이트 (bounds는 변경하지 않음)
   useEffect(() => {
@@ -307,17 +323,20 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
     // 주의: bounds는 업데이트하지 않음 (배율 유지)
   }, [places, selectedPlaceIds, onPlaceClick]);
 
-  // 경로 표시/숨김 (showRoute 변경 시에만, 배율 변경 없이)
+  // 경로 표시/숨김 (showRoute 변경 시)
   useEffect(() => {
     if (!mapRef.current || !isInitializedRef.current) return;
+    if (places.length === 0) return;
 
     const map = mapRef.current;
 
-    if (showRoute && places.length > 1) {
-      if (polylineRef.current) {
-        polylineRef.current.setMap(null);
-      }
+    // 기존 경로 제거
+    if (polylineRef.current) {
+      polylineRef.current.setMap(null);
+      polylineRef.current = null;
+    }
 
+    if (showRoute && places.length > 1) {
       // Nearest Neighbor 알고리즘으로 최적 경로 계산
       const optimizedPlaces = optimizeRoute(places);
 
@@ -335,9 +354,6 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
 
       polyline.setMap(map);
       polylineRef.current = polyline;
-    } else if (polylineRef.current) {
-      polylineRef.current.setMap(null);
-      polylineRef.current = null;
     }
   }, [showRoute, places]);
 
