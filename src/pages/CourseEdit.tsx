@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../hooks/useAuth";
@@ -45,13 +45,7 @@ const CourseEdit: React.FC = () => {
     type: "success" | "error" | "info";
   } | null>(null);
 
-  useEffect(() => {
-    if (courseId && courseId !== "new") {
-      fetchCourse();
-    }
-  }, [courseId]);
-
-  const fetchCourse = async () => {
+  const fetchCourse = useCallback(async () => {
     if (!courseId || courseId === "new") return;
 
     setLoading(true);
@@ -72,7 +66,13 @@ const CourseEdit: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [courseId, t]);
+
+  useEffect(() => {
+    if (courseId && courseId !== "new") {
+      fetchCourse();
+    }
+  }, [courseId, fetchCourse]);
 
   const handleSave = async () => {
     if (!title.trim()) {

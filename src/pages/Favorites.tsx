@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../hooks/useAuth";
@@ -23,13 +23,7 @@ const Favorites: React.FC = () => {
     type: "success" | "error" | "info";
   } | null>(null);
 
-  useEffect(() => {
-    if (currentUser) {
-      fetchFavorites();
-    }
-  }, [currentUser]);
-
-  const fetchFavorites = async () => {
+  const fetchFavorites = useCallback(async () => {
     if (!currentUser) return;
 
     setLoading(true);
@@ -44,7 +38,13 @@ const Favorites: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentUser, t]);
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchFavorites();
+    }
+  }, [currentUser, fetchFavorites]);
 
   const handleRemoveFavorite = async (favoriteId: string) => {
     try {

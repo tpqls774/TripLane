@@ -22,8 +22,8 @@ const Login: React.FC = () => {
     try {
       await signIn(email, password);
       navigate("/");
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "로그인에 실패했습니다.");
     } finally {
       setLoading(false);
     }

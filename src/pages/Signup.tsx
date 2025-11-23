@@ -35,8 +35,8 @@ const Signup: React.FC = () => {
     try {
       await signUp(email, password, displayName);
       navigate("/");
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "회원가입에 실패했습니다.");
     } finally {
       setLoading(false);
     }

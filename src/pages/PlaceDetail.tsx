@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -61,19 +61,7 @@ const PlaceDetail: React.FC = () => {
     type: "success" | "error" | "info";
   } | null>(null);
 
-  useEffect(() => {
-    if (placeId) {
-      fetchPlaceDetails();
-    }
-  }, [placeId]);
-
-  useEffect(() => {
-    if (placeId && currentUser) {
-      checkFavoriteStatus();
-    }
-  }, [placeId, currentUser]);
-
-  const fetchPlaceDetails = async () => {
+  const fetchPlaceDetails = useCallback(async () => {
     if (!placeId) return;
 
     setLoading(true);
@@ -98,7 +86,7 @@ const PlaceDetail: React.FC = () => {
         if (introResponse.response.body.items.item?.[0]) {
           setIntro(introResponse.response.body.items.item[0]);
         }
-      } catch (err) {
+      } catch {
         console.error("Intro data not available");
       }
 
@@ -106,11 +94,11 @@ const PlaceDetail: React.FC = () => {
         const imageResponse = await getDetailImage(placeId);
         if (imageResponse.response.body.items.item) {
           const imageUrls = imageResponse.response.body.items.item
-            .map((img: any) => img.originimgurl)
+            .map((img: { originimgurl?: string }) => img.originimgurl)
             .filter(Boolean);
           setImages(imageUrls);
         }
-      } catch (err) {
+      } catch {
         console.error("Image data not available");
       }
     } catch (err) {
@@ -119,7 +107,36 @@ const PlaceDetail: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [placeId, contentTypeId, t]);
+
+  useEffect(() => {
+    if (placeId) {
+      fetchPlaceDetails();
+    }
+  }, [placeId, fetchPlaceDetails]);
+
+  const checkFavoriteStatus = useCallback(async () => {
+    if (!placeId || !currentUser) return;
+
+    try {
+      const favorite = await getFavoriteByPlace(currentUser.uid, placeId);
+      if (favorite) {
+        setIsFavorite(true);
+        setFavoriteId(favorite.id || null);
+      } else {
+        setIsFavorite(false);
+        setFavoriteId(null);
+      }
+    } catch (error) {
+      console.error("즐겨찾기 상태 확인 실패:", error);
+    }
+  }, [placeId, currentUser]);
+
+  useEffect(() => {
+    if (placeId && currentUser) {
+      checkFavoriteStatus();
+    }
+  }, [placeId, currentUser, checkFavoriteStatus]);
 
   const getContentTypeName = (typeId: string) => {
     const types: Record<string, string> = {
@@ -137,23 +154,6 @@ const PlaceDetail: React.FC = () => {
     const tmp = document.createElement("div");
     tmp.innerHTML = html;
     return tmp.textContent || tmp.innerText || "";
-  };
-
-  const checkFavoriteStatus = async () => {
-    if (!placeId || !currentUser) return;
-
-    try {
-      const favorite = await getFavoriteByPlace(currentUser.uid, placeId);
-      if (favorite) {
-        setIsFavorite(true);
-        setFavoriteId(favorite.id || null);
-      } else {
-        setIsFavorite(false);
-        setFavoriteId(null);
-      }
-    } catch (error) {
-      console.error("즐겨찾기 상태 확인 실패:", error);
-    }
   };
 
   const handleToggleFavorite = async () => {

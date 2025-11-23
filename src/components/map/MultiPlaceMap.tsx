@@ -300,7 +300,8 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
 
       return () => clearInterval(checkKakao);
     }
-  }, []); // 빈 배열로 변경하여 한 번만 실행
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 빈 배열로 변경하여 한 번만 실행 (지도는 한 번만 초기화)
 
   // places가 실제로 변경되었을 때만 마커 업데이트 (bounds는 변경하지 않음)
   useEffect(() => {
