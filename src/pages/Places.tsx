@@ -97,9 +97,11 @@ const Places: React.FC = () => {
 
   // 검색을 위한 별도 쿼리 - API 키워드 검색 사용
   const { data: searchData, isLoading: isSearchLoading } = useQuery({
-    queryKey: ["searchPlaces", selectedContentType, debouncedKeyword],
+    queryKey: ["searchPlaces", selectedContentType, debouncedKeyword, currentPage],
     queryFn: async () => {
       if (!debouncedKeyword.trim()) return { places: [], totalCount: 0 };
+
+      console.log("Starting search with keyword:", debouncedKeyword, "contentType:", selectedContentType, "page:", currentPage);
 
       const contentTypesToFetch =
         selectedContentType === "all"
@@ -115,19 +117,25 @@ const Places: React.FC = () => {
 
       for (const contentType of contentTypesToFetch) {
         try {
-          const response = await searchKeyword(debouncedKeyword, contentType, 60, 1);
+          console.log(`Searching for contentType: ${contentType}, page: ${currentPage}`);
+          const response = await searchKeyword(debouncedKeyword, contentType, itemsPerPage, currentPage);
+
+          console.log(`Response for ${contentType}:`, response);
 
           if (response.response.body.items.item) {
             const items = Array.isArray(response.response.body.items.item)
               ? response.response.body.items.item
               : [response.response.body.items.item];
             allPlaces.push(...items);
+            console.log(`Added ${items.length} items for ${contentType}`);
           }
           total += response.response.body.totalCount || 0;
         } catch (err) {
           console.error(`Error searching ${contentType}:`, err);
         }
       }
+
+      console.log("Final search results:", { places: allPlaces.length, totalCount: total });
 
       return {
         places: allPlaces,
@@ -464,7 +472,7 @@ const Places: React.FC = () => {
               ))}
             </div>
 
-            {!isSearching && totalCount > itemsPerPage && (
+            {totalCount > itemsPerPage && (
               <div className="flex justify-center items-center gap-2">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
