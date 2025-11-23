@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { User, Settings, Lock } from "lucide-react";
+import { User, Settings, Lock, Shield } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { updateUserProfile, changePassword } from "../services/authService";
 import Button from "../components/common/Button";
@@ -126,7 +126,7 @@ const Profile: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="border border-gray-200 rounded-2xl p-6">
             <div className="flex items-center gap-2 mb-6">
-              <User className="w-5 h-5 text-gray-900" strokeWidth={2} />
+              <Shield className="w-5 h-5 text-gray-900" strokeWidth={2} />
               <h2 className="text-xl font-semibold text-gray-900">
                 {t("profile.accountInfo")}
               </h2>

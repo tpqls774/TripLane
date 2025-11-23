@@ -271,7 +271,7 @@ const CourseEdit: React.FC = () => {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder={t("course.descriptionPlaceholder")}
                   rows={3}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 text-gray-900"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900"
                 />
               </div>
 
@@ -282,7 +282,7 @@ const CourseEdit: React.FC = () => {
                 <select
                   value={theme}
                   onChange={(e) => setTheme(e.target.value as ThemeTypeValue)}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 text-gray-900"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900"
                 >
                   {Object.values(ThemeType).map((themeValue) => (
                     <option key={themeValue} value={themeValue}>

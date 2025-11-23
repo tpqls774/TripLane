@@ -8,7 +8,6 @@ import {
   UtensilsCrossed,
   Landmark,
   TreePine,
-  Map,
 } from "lucide-react";
 import { ThemeType } from "../types";
 import type { ThemeTypeValue } from "../types";
@@ -59,12 +58,6 @@ const Home: React.FC = () => {
     <div className="min-h-screen bg-white">
       <div className="relative h-[60vh] min-h-[500px] bg-linear-to-br from-rose-50 via-white to-teal-50 flex items-center justify-center">
         <div className="container mx-auto px-6 sm:px-12 text-center">
-          <div className="flex justify-center mb-6">
-            <Map className="w-16 h-16 text-gray-900" strokeWidth={1.5} />
-          </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-semibold text-gray-900 mb-6 tracking-tight">
-            {t("home.title")}
-          </h1>
           <p className="text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto mb-8 font-light">
             {t("home.subtitle")}
           </p>
