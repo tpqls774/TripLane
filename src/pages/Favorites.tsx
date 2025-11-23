@@ -74,6 +74,11 @@ const Favorites: React.FC = () => {
               {t("nav.myFavorites")}
             </h1>
           </div>
+          {loading && (
+            <p className="text-gray-600 text-lg">
+              <span className="bg-gray-200 text-gray-200 rounded animate-pulse">총 0개 장소</span>
+            </p>
+          )}
           {!loading && (
             <p className="text-gray-600 text-lg">
               {t("common.totalPlaces")} {favorites.length}
