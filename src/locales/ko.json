@@ -100,6 +100,8 @@
     "theme": "테마",
     "startDate": "시작일",
     "endDate": "종료일",
+    "startDatePlaceholder": "연도.월.일",
+    "endDatePlaceholder": "연도.월.일",
     "travelers": "여행 인원",
     "places": "장소",
     "noCourses": "저장된 코스가 없습니다",

@@ -15,6 +15,61 @@ import Input from "../components/common/Input";
 import Toast from "../components/common/Toast";
 import { Image } from "lucide-react";
 
+// 날짜 포맷팅 함수: YYYY-MM-DD 형식을 YYYY.MM.DD 형식으로 변환
+const formatDateForDisplay = (dateString: string): string => {
+  if (!dateString) return "";
+  
+  // 이미 YYYY.MM.DD 형식이면 그대로 반환
+  const yyyyMMddMatch = dateString.match(/^(\d{4})\.(\d{2})\.(\d{2})$/);
+  if (yyyyMMddMatch) {
+    return dateString;
+  }
+  
+  // YYYY-MM-DD 형식만 변환
+  const yyyyMmDdMatch = dateString.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (yyyyMmDdMatch) {
+    const [, year, month, day] = yyyyMmDdMatch;
+    return `${year}.${month}.${day}`;
+  }
+  
+  // 다른 형식은 그대로 반환 (부분적인 입력 포함)
+  return dateString;
+};
+
+// 날짜 파싱 함수: YYYY.MM.DD 형식을 ISO 형식으로 변환
+const parseDateFromInput = (input: string): string => {
+  if (!input) return "";
+  
+  // YYYY.MM.DD 형식 확인
+  const yyyyMMddMatch = input.match(/^(\d{4})\.(\d{2})\.(\d{2})$/);
+  if (yyyyMMddMatch) {
+    const [, year, month, day] = yyyyMMddMatch;
+    return `${year}-${month}-${day}`;
+  }
+  
+  // YYYY-MM-DD 형식 확인
+  const yyyyMmDdMatch = input.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (yyyyMmDdMatch) {
+    return input;
+  }
+  
+  return input; // 다른 형식은 그대로 반환
+};
+
+// 날짜 입력 자동 포맷팅 함수
+const formatDateInput = (input: string): string => {
+  // 숫자만 추출
+  const numbers = input.replace(/\D/g, '');
+  
+  if (numbers.length <= 4) {
+    return numbers;
+  } else if (numbers.length <= 6) {
+    return `${numbers.slice(0, 4)}.${numbers.slice(4)}`;
+  } else {
+    return `${numbers.slice(0, 4)}.${numbers.slice(4, 6)}.${numbers.slice(6, 8)}`;
+  }
+};
+
 // 두 지점 간의 거리를 계산하는 함수 (Haversine 공식)
 const getDistance = (p1: CoursePlace, p2: CoursePlace) => {
   const R = 6371; // 지구의 반경 (km)
@@ -89,6 +144,8 @@ const CourseEdit: React.FC = () => {
   const [places, setPlaces] = useState<CoursePlace[]>(initialData?.places || []);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [startDateInput, setStartDateInput] = useState("");
+  const [endDateInput, setEndDateInput] = useState("");
   const [travelers, setTravelers] = useState(2);
   const [toast, setToast] = useState<{
     message: string;
@@ -109,6 +166,15 @@ const CourseEdit: React.FC = () => {
     };
     localStorage.setItem("courseEditState", JSON.stringify(courseState));
   }, [title, description, theme, places, startDate, endDate, travelers, courseId]);
+
+  // 날짜 state와 input state 동기화
+  useEffect(() => {
+    setStartDateInput(formatDateForDisplay(startDate));
+  }, [startDate]);
+
+  useEffect(() => {
+    setEndDateInput(formatDateForDisplay(endDate));
+  }, [endDate]);
 
   // localStorage에서 코스 편집 상태 복원 (기존 코스 편집 시에만 places 복원)
   const loadCourseState = useCallback(async () => {
@@ -420,16 +486,28 @@ const CourseEdit: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <Input
                   label={t("course.startDate")}
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
+                  type="text"
+                  placeholder={t("course.startDatePlaceholder")}
+                  value={startDateInput}
+                  onChange={(e) => {
+                    const input = e.target.value;
+                    const formattedInput = formatDateInput(input);
+                    setStartDateInput(formattedInput);
+                    setStartDate(parseDateFromInput(formattedInput));
+                  }}
                   fullWidth
                 />
                 <Input
                   label={t("course.endDate")}
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
+                  type="text"
+                  placeholder={t("course.endDatePlaceholder")}
+                  value={endDateInput}
+                  onChange={(e) => {
+                    const input = e.target.value;
+                    const formattedInput = formatDateInput(input);
+                    setEndDateInput(formattedInput);
+                    setEndDate(parseDateFromInput(formattedInput));
+                  }}
                   fullWidth
                 />
                 <Input

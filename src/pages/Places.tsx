@@ -67,10 +67,10 @@ const Places: React.FC = () => {
       const contentTypesToFetch =
         selectedContentType === "all"
           ? [
-              ContentType.TOURIST_SPOT,
-              ContentType.CULTURE,
-              ContentType.RESTAURANT,
-            ]
+            ContentType.TOURIST_SPOT,
+            ContentType.CULTURE,
+            ContentType.RESTAURANT,
+          ]
           : [selectedContentType];
 
       const allPlaces: TourismPlace[] = [];
@@ -101,33 +101,27 @@ const Places: React.FC = () => {
     queryFn: async () => {
       if (!debouncedKeyword.trim()) return { places: [], totalCount: 0 };
 
-      console.log("Starting search with keyword:", debouncedKeyword, "contentType:", selectedContentType);
-
       const contentTypesToFetch =
         selectedContentType === "all"
           ? [
-              ContentType.TOURIST_SPOT,
-              ContentType.CULTURE,
-              ContentType.RESTAURANT,
-            ]
+            ContentType.TOURIST_SPOT,
+            ContentType.CULTURE,
+            ContentType.RESTAURANT,
+          ]
           : [selectedContentType];
 
       const allPlaces: TourismPlace[] = [];
       let total = 0;
-      
+
       for (const contentType of contentTypesToFetch) {
         try {
-          console.log(`Searching for contentType: ${contentType}`);
           const response = await searchKeyword(debouncedKeyword, contentType, 60, 1);
-          
-          console.log(`Response for ${contentType}:`, response);
-          
+
           if (response.response.body.items.item) {
             const items = Array.isArray(response.response.body.items.item)
               ? response.response.body.items.item
               : [response.response.body.items.item];
             allPlaces.push(...items);
-            console.log(`Added ${items.length} items for ${contentType}`);
           }
           total += response.response.body.totalCount || 0;
         } catch (err) {
@@ -135,11 +129,9 @@ const Places: React.FC = () => {
         }
       }
 
-      console.log("Final search results:", { places: allPlaces.length, totalCount: total });
-      
-      return { 
-        places: allPlaces, 
-        totalCount: total 
+      return {
+        places: allPlaces,
+        totalCount: total
       };
     },
     enabled: debouncedKeyword.trim().length > 0,
@@ -239,13 +231,6 @@ const Places: React.FC = () => {
               placeholder={t("place.searchPlaceholder")}
               className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
             />
-            {searchInput && isSearchLoading && (
-              <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                <span className="text-xs text-gray-400">
-                  {t("common.searching")}...
-                </span>
-              </div>
-            )}
           </div>
         </div>
 
@@ -264,11 +249,10 @@ const Places: React.FC = () => {
               <button
                 key={type.id}
                 onClick={() => setSelectedContentType(type.id)}
-                className={`px-4 py-2 rounded-xl font-medium text-sm transition-all ${
-                  selectedContentType === type.id
+                className={`px-4 py-2 rounded-xl font-medium text-sm transition-all ${selectedContentType === type.id
                     ? "bg-gray-900 text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+                  }`}
               >
                 {type.label}
               </button>
@@ -365,7 +349,7 @@ const Places: React.FC = () => {
                           }}
                           className="shrink-0 p-1 text-gray-400 hover:text-red-500 transition-colors"
                           aria-label={t("common.remove")}
-                        >
+                        > 
                           <svg
                             className="w-5 h-5"
                             fill="none"
@@ -389,7 +373,7 @@ const Places: React.FC = () => {
 
             <div className="mb-6 flex items-center justify-between">
               <p className="text-gray-600">
-                {isSearching 
+                {isSearching
                   ? (
                     <>
                       {t("common.searchResults")}{" "}
@@ -433,11 +417,10 @@ const Places: React.FC = () => {
 
                     <button
                       onClick={() => togglePlaceSelection(place)}
-                      className={`absolute top-4 right-4 p-2.5 rounded-full transition-all ${
-                        isPlaceSelected(place.contentid)
+                      className={`absolute top-4 right-4 p-2.5 rounded-full transition-all ${isPlaceSelected(place.contentid)
                           ? "bg-gray-900 text-white"
                           : "bg-white/90 hover:bg-white text-gray-700"
-                      }`}
+                        }`}
                     >
                       {isPlaceSelected(place.contentid) ? (
                         <svg
@@ -514,11 +497,10 @@ const Places: React.FC = () => {
                       <button
                         key={i}
                         onClick={() => handlePageChange(i)}
-                        className={`px-4 py-2 rounded-xl font-medium text-sm transition-all ${
-                          currentPage === i
+                        className={`px-4 py-2 rounded-xl font-medium text-sm transition-all ${currentPage === i
                             ? "bg-[#00d9b4] text-white"
                             : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                        }`}
+                          }`}
                       >
                         {i}
                       </button>

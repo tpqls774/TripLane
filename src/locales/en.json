@@ -100,6 +100,8 @@
     "theme": "Theme",
     "startDate": "Start Date",
     "endDate": "End Date",
+    "startDatePlaceholder": "YYYY.MM.DD",
+    "endDatePlaceholder": "YYYY.MM.DD",
     "travelers": "Number of Travelers",
     "places": "Places",
     "noCourses": "No saved courses",
