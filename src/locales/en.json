@@ -29,7 +29,8 @@
     "category": "Category",
     "noResults": "No results found",
     "tryDifferentSearch": "Try a different search term or category",
-    "searching": "Searching"
+    "searching": "Searching",
+    "searchResults": "Search results"
   },
   "nav": {
     "home": "Home",

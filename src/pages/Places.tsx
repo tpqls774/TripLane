@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import {
   MapPin,
   Search,
@@ -11,6 +12,38 @@ import {
   Image,
 } from "lucide-react";
 import { getAreaBasedList } from "../services/tourismApi";
+
+const tempSearchKeyword = async (
+  keyword: string,
+  contentTypeId?: string,
+  numOfRows?: number,
+  pageNo?: number
+) => {
+  const API_KEY = import.meta.env.VITE_TOURISM_API_KEY || "YOUR_API_KEY";
+  const BASE_URL = import.meta.env.DEV
+    ? "/api/B551011/KorService2"
+    : "https://apis.data.go.kr/B551011/KorService2";
+
+  const params = {
+    serviceKey: API_KEY,
+    MobileOS: "ETC",
+    MobileApp: "ThemaTourCurator",
+    _type: "json",
+    keyword,
+    contentTypeId,
+    numOfRows: numOfRows || 20,
+    pageNo: pageNo || 1,
+  };
+
+  try {
+    const response = await axios.get(`${BASE_URL}/searchKeyword2`, { params });
+    return response.data;
+  } catch (error) {
+    console.error("키워드 검색 실패:", error);
+    throw error;
+  }
+};
+
 import { ContentType } from "../types";
 import type { TourismPlace, CoursePlace } from "../types";
 import ErrorMessage from "../components/common/ErrorMessage";
@@ -59,9 +92,9 @@ const Places: React.FC = () => {
     { id: ContentType.RESTAURANT, label: t("place.restaurant") },
   ];
 
-  // React Query로 데이터 페칭
-  const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["places", selectedContentType, currentPage, debouncedKeyword],
+  // React Query로 데이터 페칭 (검색어 없을 때만)
+  const { data: normalData, isLoading, error, refetch } = useQuery({
+    queryKey: ["places", selectedContentType, currentPage],
     queryFn: async () => {
       const contentTypesToFetch =
         selectedContentType === "all"
@@ -88,20 +121,69 @@ const Places: React.FC = () => {
         total += response.response.body.totalCount || 0;
       }
 
-      const filteredPlaces = debouncedKeyword.trim()
-        ? allPlaces.filter(
-            (place) =>
-              place.title.toLowerCase().includes(debouncedKeyword.toLowerCase()) ||
-              place.addr1.toLowerCase().includes(debouncedKeyword.toLowerCase())
-          )
-        : allPlaces;
-
-      return { places: filteredPlaces, totalCount: total };
+      return { places: allPlaces, totalCount: total };
     },
+    enabled: !debouncedKeyword.trim(),
+    staleTime: 5 * 60 * 1000, // 5분
   });
 
-  const places = data?.places || [];
-  const totalCount = data?.totalCount || 0;
+  // 검색을 위한 별도 쿼리 - API 키워드 검색 사용
+  const { data: searchData, isLoading: isSearchLoading } = useQuery({
+    queryKey: ["searchPlaces", selectedContentType, debouncedKeyword],
+    queryFn: async () => {
+      if (!debouncedKeyword.trim()) return { places: [], totalCount: 0 };
+
+      console.log("Starting search with keyword:", debouncedKeyword, "contentType:", selectedContentType);
+
+      const contentTypesToFetch =
+        selectedContentType === "all"
+          ? [
+              ContentType.TOURIST_SPOT,
+              ContentType.CULTURE,
+              ContentType.RESTAURANT,
+            ]
+          : [selectedContentType];
+
+      const allPlaces: TourismPlace[] = [];
+      let total = 0;
+      
+      for (const contentType of contentTypesToFetch) {
+        try {
+          console.log(`Searching for contentType: ${contentType}`);
+          const response = await tempSearchKeyword(debouncedKeyword, contentType, 60, 1);
+          
+          console.log(`Response for ${contentType}:`, response);
+          
+          if (response.response.body.items.item) {
+            const items = Array.isArray(response.response.body.items.item)
+              ? response.response.body.items.item
+              : [response.response.body.items.item];
+            allPlaces.push(...items);
+            console.log(`Added ${items.length} items for ${contentType}`);
+          }
+          total += response.response.body.totalCount || 0;
+        } catch (err) {
+          console.error(`Error searching ${contentType}:`, err);
+        }
+      }
+
+      console.log("Final search results:", { places: allPlaces.length, totalCount: total });
+      
+      return { 
+        places: allPlaces, 
+        totalCount: total 
+      };
+    },
+    enabled: debouncedKeyword.trim().length > 0,
+    staleTime: 2 * 60 * 1000, // 2분
+    gcTime: 5 * 60 * 1000, // 5분
+  });
+
+  // 데이터 결합
+  const places = debouncedKeyword.trim() ? searchData?.places || [] : normalData?.places || [];
+  const totalCount = debouncedKeyword.trim() ? searchData?.totalCount || 0 : normalData?.totalCount || 0;
+  const isSearching = debouncedKeyword.trim().length > 0;
+  const isDataLoading = isSearching ? isSearchLoading : isLoading;
 
   useEffect(() => {
     setCurrentPage(1);
@@ -189,7 +271,7 @@ const Places: React.FC = () => {
               placeholder={t("place.searchPlaceholder")}
               className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
             />
-            {searchKeyword && (
+            {searchKeyword && isSearchLoading && (
               <div className="absolute right-4 top-1/2 -translate-y-1/2">
                 <span className="text-xs text-gray-400">
                   {t("common.searching")}...
@@ -233,7 +315,7 @@ const Places: React.FC = () => {
           />
         )}
 
-        {!error && places.length === 0 && !isLoading && (
+        {!error && places.length === 0 && !isDataLoading && (
           <div className="text-center py-20">
             <MapPin
               className="w-24 h-24 text-gray-300 mx-auto mb-6"
@@ -248,7 +330,7 @@ const Places: React.FC = () => {
           </div>
         )}
 
-        {isLoading && (
+        {isDataLoading && (
           <>
             <div className="mb-6 flex items-center justify-between">
               <p className="text-gray-600">
@@ -339,11 +421,25 @@ const Places: React.FC = () => {
 
             <div className="mb-6 flex items-center justify-between">
               <p className="text-gray-600">
-                {t("common.totalPlaces")}{" "}
-                <span className="font-semibold text-gray-900">
-                  {places.length}
-                </span>
-                {t("common.placeCount")}
+                {isSearching 
+                  ? (
+                    <>
+                      {t("common.searchResults")}{" "}
+                      <span className="font-semibold text-gray-900">
+                        {places.length}
+                      </span>{" "}
+                      {t("common.placeCount")}
+                    </>
+                  ) : (
+                    <>
+                      {t("common.totalPlaces")}{" "}
+                      <span className="font-semibold text-gray-900">
+                        {places.length}
+                      </span>{" "}
+                      {t("common.placeCount")}
+                    </>
+                  )
+                }
               </p>
             </div>
 
@@ -417,7 +513,7 @@ const Places: React.FC = () => {
               ))}
             </div>
 
-            {totalCount > itemsPerPage && (
+            {!isSearching && totalCount > itemsPerPage && (
               <div className="flex justify-center items-center gap-2">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}

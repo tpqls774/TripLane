@@ -29,7 +29,8 @@
     "category": "카테고리",
     "noResults": "검색 결과가 없습니다",
     "tryDifferentSearch": "다른 검색어나 카테고리를 선택해보세요",
-    "searching": "검색 중"
+    "searching": "검색 중",
+    "searchResults": "검색 결과"
   },
   "nav": {
     "home": "홈",

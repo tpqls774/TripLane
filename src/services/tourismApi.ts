@@ -43,21 +43,26 @@ export const getAreaBasedList = async (params: {
 
 export const searchKeyword = async (
   keyword: string,
-  contentTypeId?: string
+  contentTypeId?: string,
+  numOfRows?: number,
+  pageNo?: number
 ) => {
   const requestParams = {
     ...defaultParams,
     keyword,
     contentTypeId,
-    numOfRows: 20,
-    pageNo: 1,
+    numOfRows: numOfRows || 20,
+    pageNo: pageNo || 1,
   };
+
+  console.log("Search API params:", requestParams);
 
   try {
     const response = await axios.get<ApiResponse<TourismPlace>>(
       `${BASE_URL}/searchKeyword2`,
       { params: requestParams }
     );
+    console.log("Search API response:", response.data);
     return response.data;
   } catch (error) {
     console.error("키워드 검색 실패:", error);
