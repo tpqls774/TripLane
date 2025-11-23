@@ -17,6 +17,7 @@ import {
   UtensilsCrossed,
   Landmark,
   TreePine,
+  MapPin
 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { logout } from "../../services/authService";
@@ -75,7 +76,7 @@ const Navbar: React.FC = () => {
   };
 
   const themes = [
-    { id: ThemeType.WELLNESS, Icon: Sparkles },
+    { id: ThemeType.WELLNESS, Icon: MapPin },
     { id: ThemeType.PET_FRIENDLY, Icon: PawPrint },
     { id: ThemeType.HALLYU, Icon: Theater },
     { id: ThemeType.GOURMET, Icon: UtensilsCrossed },
@@ -114,7 +115,7 @@ const Navbar: React.FC = () => {
                   : "text-gray-500 hover:text-gray-900"
               }`}
             >
-              <Sparkles className="w-4 h-4 lg:hidden" strokeWidth={2} />
+              <MapPin className="w-4 h-4 lg:hidden" strokeWidth={2} />
               <span className="hidden lg:inline">{t("nav.places")}</span>
             </Link>
             <div className="relative" ref={themeDropdownRef}>
