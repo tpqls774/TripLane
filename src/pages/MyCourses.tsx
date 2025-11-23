@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -34,13 +34,7 @@ const MyCourses: React.FC = () => {
     onConfirm?: () => void | Promise<void>;
   } | null>(null);
 
-  useEffect(() => {
-    if (currentUser) {
-      fetchCourses();
-    }
-  }, [currentUser]);
-
-  const fetchCourses = async () => {
+  const fetchCourses = useCallback(async () => {
     if (!currentUser) return;
 
     setLoading(true);
@@ -55,7 +49,13 @@ const MyCourses: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentUser, t]);
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchCourses();
+    }
+  }, [currentUser, fetchCourses]);
 
   const handleDeleteCourse = async (courseId: string) => {
     try {

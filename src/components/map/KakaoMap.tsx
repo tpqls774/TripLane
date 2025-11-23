@@ -1,16 +1,12 @@
 import React, { useEffect, useRef } from "react";
+import type { KakaoMapsMap } from "../../types/kakaoMaps";
+import "../../types/kakaoMaps"; // 전역 타입 선언을 위해 import
 
 interface KakaoMapProps {
   latitude: number;
   longitude: number;
   title: string;
   address?: string;
-}
-
-declare global {
-  interface Window {
-    kakao: any;
-  }
 }
 
 const KakaoMap: React.FC<KakaoMapProps> = ({
@@ -20,7 +16,7 @@ const KakaoMap: React.FC<KakaoMapProps> = ({
   address,
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<any>(null);
+  const mapRef = useRef<KakaoMapsMap | null>(null);
 
   useEffect(() => {
 

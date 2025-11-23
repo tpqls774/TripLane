@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -33,13 +33,7 @@ const CourseDetail: React.FC = () => {
   } | null>(null);
   const [showRoute, setShowRoute] = useState(true);
 
-  useEffect(() => {
-    if (courseId) {
-      fetchCourse();
-    }
-  }, [courseId]);
-
-  const fetchCourse = async () => {
+  const fetchCourse = useCallback(async () => {
     if (!courseId) return;
 
     setLoading(true);
@@ -58,7 +52,13 @@ const CourseDetail: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [courseId, t]);
+
+  useEffect(() => {
+    if (courseId) {
+      fetchCourse();
+    }
+  }, [courseId, fetchCourse]);
 
   const handleShare = () => {
     const shareUrl = `${window.location.origin}/course/${courseId}/view`;
