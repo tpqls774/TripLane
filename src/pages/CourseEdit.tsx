@@ -95,8 +95,8 @@ const CourseEdit: React.FC = () => {
     type: "success" | "error" | "info";
   } | null>(null);
 
-  // localStorage에 코스 편집 상태 저장
-  const saveCourseState = useCallback(() => {
+  // localStorage에 코스 편집 상태 저장 (Recommend 페이지로 이동할 때만 사용)
+  const saveCourseStateForRecommend = useCallback(() => {
     const courseState = {
       title,
       description,
@@ -110,34 +110,54 @@ const CourseEdit: React.FC = () => {
     localStorage.setItem("courseEditState", JSON.stringify(courseState));
   }, [title, description, theme, places, startDate, endDate, travelers, courseId]);
 
-  // localStorage에서 코스 편집 상태 복원
-  const loadCourseState = useCallback(() => {
+  // localStorage에서 코스 편집 상태 복원 (기존 코스 편집 시에만 places 복원)
+  const loadCourseState = useCallback(async () => {
     const savedState = localStorage.getItem("courseEditState");
     if (savedState) {
       try {
         const state = JSON.parse(savedState);
         // 같은 코스 ID이거나 새 코스인 경우에만 복원
-        if (state.courseId === courseId || (state.courseId === "new" && courseId === "new")) {
-          setTitle(state.title || "");
-          setDescription(state.description || "");
-          setTheme(state.theme || ThemeType.WELLNESS);
-          setStartDate(state.startDate || "");
-          setEndDate(state.endDate || "");
-          setTravelers(state.travelers || 2);
-          
-          // 기존 장소와 새로운 장소 합치기
-          const existingPlaces = state.places || [];
-          const newPlaces = initialData?.places || [];
-          
-          // 중복 제거 (placeId 기준)
-          const allPlaces = [...existingPlaces];
-          newPlaces.forEach(newPlace => {
-            if (!allPlaces.some(p => p.placeId === newPlace.placeId)) {
-              allPlaces.push(newPlace);
+        if (state.courseId === courseId || (state.courseId === "new" && (courseId === "new" || !courseId))) {
+
+          // 기존 코스 편집 시: DB에서 먼저 불러온 후 localStorage의 places만 업데이트
+          if (courseId && courseId !== "new") {
+            try {
+              const course = await getCourse(courseId);
+              if (course) {
+                // DB 데이터로 먼저 설정
+                setTitle(course.title);
+                setDescription(course.description);
+                setTheme(course.theme);
+                setStartDate(course.startDate || "");
+                setEndDate(course.endDate || "");
+                setTravelers(course.travelers || 2);
+
+                // localStorage의 places만 덮어쓰기 (Recommend에서 추가한 것)
+                if (state.places && state.places.length > 0) {
+                  setPlaces(state.places);
+                } else {
+                  setPlaces(course.places);
+                }
+              }
+            } catch (error) {
+              console.error("Failed to fetch course in loadCourseState:", error);
             }
-          });
-          
-          setPlaces(allPlaces);
+          } else {
+            // 새 코스: 모든 state 복원
+            setTitle(state.title || "");
+            setDescription(state.description || "");
+            setTheme(state.theme || ThemeType.WELLNESS);
+            setStartDate(state.startDate || "");
+            setEndDate(state.endDate || "");
+            setTravelers(state.travelers || 2);
+
+            if (state.places && state.places.length > 0) {
+              setPlaces(state.places);
+            } else if (initialData?.places) {
+              const optimizedPlaces = optimizeOrderByNearestNeighbor(initialData.places);
+              setPlaces(optimizedPlaces);
+            }
+          }
         }
       } catch (error) {
         console.error("Failed to load course state:", error);
@@ -145,10 +165,7 @@ const CourseEdit: React.FC = () => {
     }
   }, [courseId, initialData]);
 
-  // 상태가 변경될 때마다 localStorage에 저장
-  useEffect(() => {
-    saveCourseState();
-  }, [saveCourseState]);
+  // 자동 저장 제거 - Recommend 페이지로 이동할 때만 수동으로 저장
 
   const fetchCourse = useCallback(async () => {
     if (!courseId || courseId === "new") return;
@@ -173,20 +190,58 @@ const CourseEdit: React.FC = () => {
   }, [courseId, t]);
 
   useEffect(() => {
-    if (courseId && courseId !== "new") {
-      fetchCourse();
-    } else {
-      // 새 코스 생성 시 localStorage에서 상태 복원 시도
-      loadCourseState();
-      
-      // initialData가 있고 localStorage에 저장된 상태가 없는 경우에만 initialData 사용
-      if (!localStorage.getItem("courseEditState") && initialData?.places) {
-        // 전달된 장소들의 순서를 최적화합니다.
-        const optimizedPlaces = optimizeOrderByNearestNeighbor(initialData.places);
-        setPlaces(optimizedPlaces);
+    // localStorage에서 상태 복원 시도 (항상 먼저 확인)
+    const savedState = localStorage.getItem("courseEditState");
+
+    const loadData = async () => {
+      if (courseId && courseId !== "new") {
+        // 기존 코스 편집
+        if (savedState) {
+          try {
+            const state = JSON.parse(savedState);
+            // localStorage의 데이터가 현재 코스와 일치하고 places가 있는 경우에만 복원
+            if (state.courseId === courseId && state.places && state.places.length > 0) {
+              // localStorage에 유효한 장소 데이터가 있으면 복원 (Recommend에서 추가한 경우)
+              await loadCourseState();
+              // 복원 후 localStorage 정리 (다음 번에는 DB에서 불러오도록)
+              localStorage.removeItem("courseEditState");
+              setLoading(false);
+              return;
+            } else if (state.courseId === courseId) {
+              // 같은 코스지만 places가 없으면 localStorage 정리
+              localStorage.removeItem("courseEditState");
+            }
+          } catch (error) {
+            console.error("Failed to parse course state:", error);
+          }
+        }
+        // localStorage에 유효한 데이터가 없으면 DB에서 불러오기
+        fetchCourse();
+      } else {
+        // 새 코스 생성
+        if (savedState) {
+          try {
+            const state = JSON.parse(savedState);
+            if (state.courseId === "new" || !state.courseId) {
+              // localStorage에 새 코스 상태가 있으면 복원 (places가 없어도 괜찮음)
+              await loadCourseState();
+              return;
+            }
+          } catch (error) {
+            console.error("Failed to parse course state:", error);
+          }
+        }
+
+        // initialData가 있으면 사용
+        if (initialData?.places) {
+          const optimizedPlaces = optimizeOrderByNearestNeighbor(initialData.places);
+          setPlaces(optimizedPlaces);
+        }
       }
-    }
-  }, [courseId, fetchCourse, initialData, loadCourseState]);
+    };
+
+    loadData();
+  }, [courseId]); // 의존성 배열을 courseId만으로 제한
 
   const handleSave = async () => {
     if (!title.trim()) {
@@ -290,8 +345,8 @@ const CourseEdit: React.FC = () => {
   };
 
   const handleAddPlace = () => {
-    // localStorage에 현재 상태 저장
-    saveCourseState();
+    // localStorage에 현재 상태 저장 (Recommend 페이지로 이동하기 전)
+    saveCourseStateForRecommend();
     // 추천 페이지로 이동
     navigate("/recommend?theme=" + theme);
   };

@@ -169,9 +169,39 @@ const Recommend: React.FC = () => {
       });
       return;
     }
-    // Clear sessionStorage when creating course
-    sessionStorage.removeItem("selectedPlacesRecommend");
-    navigate("/course/new", { state: { theme, places: selectedPlaces } });
+
+    // localStorage에서 코스 편집 상태 확인
+    const courseState = localStorage.getItem("courseEditState");
+
+    if (courseState) {
+      // 코스 편집 페이지에서 온 경우 - 해당 페이지로 돌아가기
+      try {
+        const state = JSON.parse(courseState);
+        const courseId = state.courseId || "new";
+
+        // localStorage에 선택된 장소 업데이트
+        const updatedState = {
+          ...state,
+          places: selectedPlaces
+        };
+        localStorage.setItem("courseEditState", JSON.stringify(updatedState));
+
+        // Clear sessionStorage
+        sessionStorage.removeItem("selectedPlacesRecommend");
+
+        // 코스 편집 페이지로 돌아가기
+        navigate(`/course/${courseId}/edit`);
+      } catch (error) {
+        console.error("Failed to parse course state:", error);
+        // fallback: 새 코스 생성
+        sessionStorage.removeItem("selectedPlacesRecommend");
+        navigate("/course/new/edit", { state: { theme, places: selectedPlaces } });
+      }
+    } else {
+      // 새로 생성하는 경우
+      sessionStorage.removeItem("selectedPlacesRecommend");
+      navigate("/course/new/edit", { state: { theme, places: selectedPlaces } });
+    }
   };
 
   const handlePageChange = (page: number) => {
