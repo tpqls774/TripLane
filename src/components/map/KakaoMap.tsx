@@ -54,11 +54,11 @@ const KakaoMap: React.FC<KakaoMapProps> = ({
         marker.setMap(map);
 
         const infowindowContent = `
-          <div style="padding: 10px; min-width: 150px; text-align: center;">
-            <div style="font-weight: bold; margin-bottom: 5px;">${title}</div>
+          <div style="padding: 10px; width: 250px; max-width: 250px; text-align: center; box-sizing: border-box;">
+            <div style="font-weight: bold; margin-bottom: 5px; word-break: break-all; overflow-wrap: break-word; white-space: normal;">${title}</div>
             ${
               address
-                ? `<div style="font-size: 12px; color: #666;">${address}</div>`
+                ? `<div style="font-size: 12px; color: #666; word-break: break-all; overflow-wrap: break-word; white-space: normal;">${address}</div>`
                 : ""
             }
           </div>
