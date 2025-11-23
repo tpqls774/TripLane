@@ -27,16 +27,14 @@ const CourseEdit: React.FC = () => {
     places?: CoursePlace[];
   };
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(!!courseId);
   const [saving, setSaving] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [theme, setTheme] = useState<ThemeTypeValue>(
     initialData?.theme || ThemeType.WELLNESS
   );
-  const [places, setPlaces] = useState<CoursePlace[]>(
-    initialData?.places || []
-  );
+  const [places, setPlaces] = useState<CoursePlace[]>([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [travelers, setTravelers] = useState(2);
@@ -48,8 +46,7 @@ const CourseEdit: React.FC = () => {
   const fetchCourse = useCallback(async () => {
     if (!courseId || courseId === "new") return;
 
-    setLoading(true);
-    try {
+        try {
       const course = await getCourse(courseId);
       if (course) {
         setTitle(course.title);
@@ -72,7 +69,7 @@ const CourseEdit: React.FC = () => {
     if (courseId && courseId !== "new") {
       fetchCourse();
     }
-  }, [courseId, fetchCourse]);
+  }, [courseId]);
 
   const handleSave = async () => {
     if (!title.trim()) {

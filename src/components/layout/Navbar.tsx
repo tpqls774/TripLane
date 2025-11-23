@@ -76,7 +76,7 @@ const Navbar: React.FC = () => {
   };
 
   const themes = [
-    { id: ThemeType.WELLNESS, Icon: MapPin },
+    { id: ThemeType.WELLNESS, Icon: Sparkles },
     { id: ThemeType.PET_FRIENDLY, Icon: PawPrint },
     { id: ThemeType.HALLYU, Icon: Theater },
     { id: ThemeType.GOURMET, Icon: UtensilsCrossed },
