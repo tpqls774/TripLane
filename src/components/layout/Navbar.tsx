@@ -12,12 +12,11 @@ import {
   Menu,
   Compass,
   ChevronDown,
-  Flower2,
-  Dog,
-  Film,
+  PawPrint,
+  Theater,
   UtensilsCrossed,
-  Palette,
-  Trees
+  Landmark,
+  TreePine,
 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { logout } from "../../services/authService";
@@ -76,12 +75,12 @@ const Navbar: React.FC = () => {
   };
 
   const themes = [
-    { id: ThemeType.WELLNESS, Icon: Flower2 },
-    { id: ThemeType.PET_FRIENDLY, Icon: Dog },
-    { id: ThemeType.HALLYU, Icon: Film },
+    { id: ThemeType.WELLNESS, Icon: Sparkles },
+    { id: ThemeType.PET_FRIENDLY, Icon: PawPrint },
+    { id: ThemeType.HALLYU, Icon: Theater },
     { id: ThemeType.GOURMET, Icon: UtensilsCrossed },
-    { id: ThemeType.CULTURE, Icon: Palette },
-    { id: ThemeType.NATURE, Icon: Trees },
+    { id: ThemeType.CULTURE, Icon: Landmark },
+    { id: ThemeType.NATURE, Icon: TreePine },
   ];
 
   return (
