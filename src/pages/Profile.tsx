@@ -8,7 +8,7 @@ import Input from "../components/common/Input";
 import Toast from "../components/common/Toast";
 
 const Profile: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { currentUser } = useAuth();
 
   const [displayName, setDisplayName] = useState(
@@ -99,7 +99,8 @@ const Profile: React.FC = () => {
 
   const formatDate = (timestamp: string | null | undefined) => {
     if (!timestamp) return "-";
-    return new Date(timestamp).toLocaleDateString("ko-KR", {
+    const locale = i18n.language === "en" ? "en-US" : "ko-KR";
+    return new Date(timestamp).toLocaleDateString(locale, {
       year: "numeric",
       month: "long",
       day: "numeric",
