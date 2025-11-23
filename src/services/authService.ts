@@ -30,9 +30,10 @@ export const signUp = async (
     }
 
     return userCredential.user;
-  } catch (error: any) {
+  } catch (error) {
     console.error("회원가입 실패:", error);
-    throw new Error(getAuthErrorMessage(error.code));
+    const errorCode = error && typeof error === 'object' && 'code' in error ? String(error.code) : '';
+    throw new Error(getAuthErrorMessage(errorCode));
   }
 };
 
@@ -47,9 +48,10 @@ export const signIn = async (
       password
     );
     return userCredential.user;
-  } catch (error: any) {
+  } catch (error) {
     console.error("로그인 실패:", error);
-    throw new Error(getAuthErrorMessage(error.code));
+    const errorCode = error && typeof error === 'object' && 'code' in error ? String(error.code) : '';
+    throw new Error(getAuthErrorMessage(errorCode));
   }
 };
 
@@ -72,9 +74,10 @@ export const updateUserProfile = async (
       displayName: displayName || user.displayName,
       photoURL: photoURL || user.photoURL,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error("프로필 업데이트 실패:", error);
-    throw new Error(getAuthErrorMessage(error.code));
+    const errorCode = error && typeof error === 'object' && 'code' in error ? String(error.code) : '';
+    throw new Error(getAuthErrorMessage(errorCode));
   }
 };
 
@@ -91,9 +94,10 @@ export const changePassword = async (
     await reauthenticateWithCredential(user, credential);
 
     await updatePassword(user, newPassword);
-  } catch (error: any) {
+  } catch (error) {
     console.error("비밀번호 변경 실패:", error);
-    throw new Error(getAuthErrorMessage(error.code));
+    const errorCode = error && typeof error === 'object' && 'code' in error ? String(error.code) : '';
+    throw new Error(getAuthErrorMessage(errorCode));
   }
 };
 
@@ -110,9 +114,10 @@ export const changeEmail = async (
     await reauthenticateWithCredential(user, credential);
 
     await updateEmail(user, newEmail);
-  } catch (error: any) {
+  } catch (error) {
     console.error("이메일 변경 실패:", error);
-    throw new Error(getAuthErrorMessage(error.code));
+    const errorCode = error && typeof error === 'object' && 'code' in error ? String(error.code) : '';
+    throw new Error(getAuthErrorMessage(errorCode));
   }
 };
 
