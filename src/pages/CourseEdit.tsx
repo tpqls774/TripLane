@@ -95,6 +95,61 @@ const CourseEdit: React.FC = () => {
     type: "success" | "error" | "info";
   } | null>(null);
 
+  // localStorage에 코스 편집 상태 저장
+  const saveCourseState = useCallback(() => {
+    const courseState = {
+      title,
+      description,
+      theme,
+      places,
+      startDate,
+      endDate,
+      travelers,
+      courseId: courseId || "new"
+    };
+    localStorage.setItem("courseEditState", JSON.stringify(courseState));
+  }, [title, description, theme, places, startDate, endDate, travelers, courseId]);
+
+  // localStorage에서 코스 편집 상태 복원
+  const loadCourseState = useCallback(() => {
+    const savedState = localStorage.getItem("courseEditState");
+    if (savedState) {
+      try {
+        const state = JSON.parse(savedState);
+        // 같은 코스 ID이거나 새 코스인 경우에만 복원
+        if (state.courseId === courseId || (state.courseId === "new" && courseId === "new")) {
+          setTitle(state.title || "");
+          setDescription(state.description || "");
+          setTheme(state.theme || ThemeType.WELLNESS);
+          setStartDate(state.startDate || "");
+          setEndDate(state.endDate || "");
+          setTravelers(state.travelers || 2);
+          
+          // 기존 장소와 새로운 장소 합치기
+          const existingPlaces = state.places || [];
+          const newPlaces = initialData?.places || [];
+          
+          // 중복 제거 (placeId 기준)
+          const allPlaces = [...existingPlaces];
+          newPlaces.forEach(newPlace => {
+            if (!allPlaces.some(p => p.placeId === newPlace.placeId)) {
+              allPlaces.push(newPlace);
+            }
+          });
+          
+          setPlaces(allPlaces);
+        }
+      } catch (error) {
+        console.error("Failed to load course state:", error);
+      }
+    }
+  }, [courseId, initialData]);
+
+  // 상태가 변경될 때마다 localStorage에 저장
+  useEffect(() => {
+    saveCourseState();
+  }, [saveCourseState]);
+
   const fetchCourse = useCallback(async () => {
     if (!courseId || courseId === "new") return;
 
@@ -120,12 +175,18 @@ const CourseEdit: React.FC = () => {
   useEffect(() => {
     if (courseId && courseId !== "new") {
       fetchCourse();
-    } else if (initialData?.places) {
-      // 새 코스 생성 시 전달된 장소들의 순서를 최적화합니다.
-      const optimizedPlaces = optimizeOrderByNearestNeighbor(initialData.places);
-      setPlaces(optimizedPlaces);
+    } else {
+      // 새 코스 생성 시 localStorage에서 상태 복원 시도
+      loadCourseState();
+      
+      // initialData가 있고 localStorage에 저장된 상태가 없는 경우에만 initialData 사용
+      if (!localStorage.getItem("courseEditState") && initialData?.places) {
+        // 전달된 장소들의 순서를 최적화합니다.
+        const optimizedPlaces = optimizeOrderByNearestNeighbor(initialData.places);
+        setPlaces(optimizedPlaces);
+      }
     }
-  }, [courseId, fetchCourse, initialData]);
+  }, [courseId, fetchCourse, initialData, loadCourseState]);
 
   const handleSave = async () => {
     if (!title.trim()) {
@@ -181,10 +242,12 @@ const CourseEdit: React.FC = () => {
 
       if (courseId === "new" || !courseId) {
         await createCourse(courseData);
+        localStorage.removeItem("courseEditState"); // 저장 성공 후 localStorage 정리
         setToast({ message: t("course.saveSuccess"), type: "success" });
         setTimeout(() => navigate("/my-courses"), 1500);
       } else {
         await updateCourse(courseId, courseData);
+        localStorage.removeItem("courseEditState"); // 저장 성공 후 localStorage 정리
         setToast({ message: t("course.updateSuccess"), type: "success" });
         setTimeout(() => navigate("/my-courses"), 1500);
       }
@@ -224,6 +287,13 @@ const CourseEdit: React.FC = () => {
     });
 
     setPlaces(newPlaces);
+  };
+
+  const handleAddPlace = () => {
+    // localStorage에 현재 상태 저장
+    saveCourseState();
+    // 추천 페이지로 이동
+    navigate("/recommend?theme=" + theme);
   };
 
   if (loading) {
@@ -327,7 +397,7 @@ const CourseEdit: React.FC = () => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => navigate("/recommend?theme=" + theme)}
+                onClick={handleAddPlace}
               >
                 + {t("common.addPlace")}
               </Button>

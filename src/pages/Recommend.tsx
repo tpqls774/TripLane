@@ -18,6 +18,21 @@ const Recommend: React.FC = () => {
   const theme = searchParams.get("theme") as ThemeTypeValue;
 
   const [selectedPlaces, setSelectedPlaces] = useState<CoursePlace[]>(() => {
+    // 먼저 localStorage에서 코스 편집 상태 확인
+    const courseState = localStorage.getItem("courseEditState");
+    if (courseState) {
+      try {
+        const state = JSON.parse(courseState);
+        // 코스 편집 페이지에서 온 경우, 저장된 장소들을 선택된 장소로 설정
+        if (state.places && state.places.length > 0) {
+          return state.places;
+        }
+      } catch (error) {
+        console.error("Failed to load course state:", error);
+      }
+    }
+    
+    // sessionStorage에서 기존 선택된 장소 로드 (fallback)
     const saved = sessionStorage.getItem("selectedPlacesRecommend");
     return saved ? JSON.parse(saved) : [];
   });
@@ -29,10 +44,27 @@ const Recommend: React.FC = () => {
   } | null>(null);
 
   useEffect(() => {
+    // sessionStorage에 저장 (기존 기능 유지)
     sessionStorage.setItem(
       "selectedPlacesRecommend",
       JSON.stringify(selectedPlaces)
     );
+    
+    // localStorage에도 저장 (코스 편집 페이지와 동기화)
+    const courseState = localStorage.getItem("courseEditState");
+    if (courseState) {
+      try {
+        const state = JSON.parse(courseState);
+        // 선택된 장소 목록만 업데이트
+        const updatedState = {
+          ...state,
+          places: selectedPlaces
+        };
+        localStorage.setItem("courseEditState", JSON.stringify(updatedState));
+      } catch (error) {
+        console.error("Failed to update course state:", error);
+      }
+    }
   }, [selectedPlaces]);
 
   // React Query로 데이터 페칭
