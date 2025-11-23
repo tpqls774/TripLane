@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import {
   MapPin,
   Search,
@@ -11,38 +10,7 @@ import {
   ChevronRight,
   Image,
 } from "lucide-react";
-import { getAreaBasedList } from "../services/tourismApi";
-
-const tempSearchKeyword = async (
-  keyword: string,
-  contentTypeId?: string,
-  numOfRows?: number,
-  pageNo?: number
-) => {
-  const API_KEY = import.meta.env.VITE_TOURISM_API_KEY || "YOUR_API_KEY";
-  const BASE_URL = import.meta.env.DEV
-    ? "/api/B551011/KorService2"
-    : "https://apis.data.go.kr/B551011/KorService2";
-
-  const params = {
-    serviceKey: API_KEY,
-    MobileOS: "ETC",
-    MobileApp: "ThemaTourCurator",
-    _type: "json",
-    keyword,
-    contentTypeId,
-    numOfRows: numOfRows || 20,
-    pageNo: pageNo || 1,
-  };
-
-  try {
-    const response = await axios.get(`${BASE_URL}/searchKeyword2`, { params });
-    return response.data;
-  } catch (error) {
-    console.error("키워드 검색 실패:", error);
-    throw error;
-  }
-};
+import { getAreaBasedList, searchKeyword } from "../services/tourismApi";
 
 import { ContentType } from "../types";
 import type { TourismPlace, CoursePlace } from "../types";
@@ -60,7 +28,7 @@ const Places: React.FC = () => {
     return saved ? JSON.parse(saved) : [];
   });
   const [selectedContentType, setSelectedContentType] = useState<string>("all");
-  const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const [debouncedKeyword, setDebouncedKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
@@ -75,11 +43,11 @@ const Places: React.FC = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedKeyword(searchKeyword);
+      setDebouncedKeyword(searchInput);
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [searchKeyword]);
+  }, [searchInput]);
 
   const contentTypes = [
     { id: "all", label: t("common.all") },
@@ -150,7 +118,7 @@ const Places: React.FC = () => {
       for (const contentType of contentTypesToFetch) {
         try {
           console.log(`Searching for contentType: ${contentType}`);
-          const response = await tempSearchKeyword(debouncedKeyword, contentType, 60, 1);
+          const response = await searchKeyword(debouncedKeyword, contentType, 60, 1);
           
           console.log(`Response for ${contentType}:`, response);
           
@@ -266,12 +234,12 @@ const Places: React.FC = () => {
             />
             <input
               type="text"
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
               placeholder={t("place.searchPlaceholder")}
               className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
             />
-            {searchKeyword && isSearchLoading && (
+            {searchInput && isSearchLoading && (
               <div className="absolute right-4 top-1/2 -translate-y-1/2">
                 <span className="text-xs text-gray-400">
                   {t("common.searching")}...

@@ -55,14 +55,11 @@ export const searchKeyword = async (
     pageNo: pageNo || 1,
   };
 
-  console.log("Search API params:", requestParams);
-
   try {
     const response = await axios.get<ApiResponse<TourismPlace>>(
       `${BASE_URL}/searchKeyword2`,
       { params: requestParams }
     );
-    console.log("Search API response:", response.data);
     return response.data;
   } catch (error) {
     console.error("키워드 검색 실패:", error);
