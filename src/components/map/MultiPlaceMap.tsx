@@ -15,9 +15,81 @@ interface MultiPlaceMapProps {
   showRoute?: boolean;
 }
 
+// Kakao Maps SDK 타입 정의
+interface KakaoMapsLatLng {
+  getLat(): number;
+  getLng(): number;
+}
+
+interface KakaoMapsMap {
+  setCenter(latlng: KakaoMapsLatLng): void;
+  setLevel(level: number): void;
+  setBounds(bounds: KakaoMapsLatLngBounds): void;
+  getLevel(): number;
+  getCenter(): KakaoMapsLatLng;
+}
+
+interface KakaoMapsMarker {
+  setMap(map: KakaoMapsMap | null): void;
+  getPosition(): KakaoMapsLatLng;
+}
+
+interface KakaoMapsInfoWindow {
+  open(map: KakaoMapsMap, marker: KakaoMapsMarker): void;
+  close(): void;
+}
+
+interface KakaoMapsPolyline {
+  setMap(map: KakaoMapsMap | null): void;
+}
+
+interface KakaoMapsLatLngBounds {
+  extend(latlng: KakaoMapsLatLng): void;
+  isEmpty(): boolean;
+  getNorthEast(): KakaoMapsLatLng;
+  getSouthWest(): KakaoMapsLatLng;
+}
+
+interface KakaoMapsEvent {
+  addListener(
+    target: KakaoMapsMarker,
+    eventType: string,
+    handler: () => void
+  ): void;
+}
+
+interface KakaoMapsNamespace {
+  LatLng: new (lat: number, lng: number) => KakaoMapsLatLng;
+  Map: new (container: HTMLElement, options: {
+    center: KakaoMapsLatLng;
+    level: number;
+  }) => KakaoMapsMap;
+  Marker: new (options: {
+    position: KakaoMapsLatLng;
+    title?: string;
+  }) => KakaoMapsMarker;
+  InfoWindow: new (options: {
+    content: string;
+  }) => KakaoMapsInfoWindow;
+  Polyline: new (options: {
+    path: KakaoMapsLatLng[];
+    strokeWeight: number;
+    strokeColor: string;
+    strokeOpacity: number;
+    strokeStyle: string;
+  }) => KakaoMapsPolyline;
+  LatLngBounds: new () => KakaoMapsLatLngBounds;
+  event: KakaoMapsEvent;
+  load(callback: () => void): void;
+}
+
+interface KakaoSDK {
+  maps: KakaoMapsNamespace;
+}
+
 declare global {
   interface Window {
-    kakao: any;
+    kakao: KakaoSDK;
   }
 }
 
@@ -28,9 +100,9 @@ const MultiPlaceMap: React.FC<MultiPlaceMapProps> = ({
   showRoute = false,
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<any>(null);
-  const markersRef = useRef<any[]>([]);
-  const polylineRef = useRef<any>(null);
+  const mapRef = useRef<KakaoMapsMap | null>(null);
+  const markersRef = useRef<KakaoMapsMarker[]>([]);
+  const polylineRef = useRef<KakaoMapsPolyline | null>(null);
   const isInitializedRef = useRef(false);
   const placesRef = useRef<string>("");
 
