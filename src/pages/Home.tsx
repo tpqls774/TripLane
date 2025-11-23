@@ -123,14 +123,12 @@ const Home: React.FC = () => {
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   {t(`theme.${theme.type}`)}
                 </h3>
-                <p className="text-gray-600 text-sm mb-3 font-light">
+                <p className="text-gray-600 text-sm mb-1 font-light">
                   {t(`theme.description.${theme.type}`)}
                 </p>
-                <p className="text-[#00d9b4] text-sm font-medium flex items-center gap-1">
-                  {t(`home.action.${theme.type}`)}
-                  <span className="group-hover:translate-x-1 transition-transform">
-                    →
-                  </span>
+                <p className="text-[#00d9b4] text-sm font-medium">
+                  {t(`home.action.${theme.type}`)}{" "}
+                  <span className="inline-block group-hover:translate-x-1 transition-transform">→</span>
                 </p>
               </div>
             );
